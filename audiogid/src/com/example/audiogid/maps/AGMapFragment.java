@@ -57,13 +57,7 @@ public class AGMapFragment extends SupportMapFragment {
     	      }
     	    });
     	 
-    	 getMap().setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
-
-    	        @Override
-    	        public void onInfoWindowClick(Marker marker) {
-    	        	 
-    	        }
-    	    });
+    	 getMap().setOnInfoWindowClickListener(onInfoWindowClickListener);
     	  provider = new DataBaseContentProvider(getActivity()){
 
 			@Override
@@ -74,6 +68,14 @@ public class AGMapFragment extends SupportMapFragment {
 			}};
 			getData();
 	}
+	 
+	 OnInfoWindowClickListener onInfoWindowClickListener = new OnInfoWindowClickListener() {
+		 
+	        @Override
+	        public void onInfoWindowClick(Marker marker) {
+	        	 Log.d("Debug", "Нажали на окно с информацией");
+	        }
+	    };
 	 
 	 private void getData() {
 		// TODO Auto-generated method stub
