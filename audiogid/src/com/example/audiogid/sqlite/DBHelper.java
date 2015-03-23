@@ -16,6 +16,8 @@ import android.util.Log;
 
 class DBHelper extends SQLiteOpenHelper {
 	
+	private static final int BUFFER_SIZE = 1024;
+
 	final String LOG_TAG = "DBHelper";
 	
 	private static final String DB_PATH = Constants.DB_PATH;
@@ -95,7 +97,7 @@ class DBHelper extends SQLiteOpenHelper {
  
         OutputStream myOutput = new FileOutputStream(outFileName);
  
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[BUFFER_SIZE];
         int length;
         while ((length = myInput.read(buffer)) > 0){
             myOutput.write(buffer, 0, length);

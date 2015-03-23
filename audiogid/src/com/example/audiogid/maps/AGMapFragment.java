@@ -1,5 +1,6 @@
 package com.example.audiogid.maps;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.LocationListener;
@@ -9,29 +10,38 @@ import android.widget.TextView;
 
 import com.example.audiogid.AudioActivity;
 import com.example.audiogid.GPSTracker;
+import com.example.audiogid.IRecordSetter;
 import com.example.audiogid.MLocationListener;
 import com.example.audiogid.R;
 import com.example.audiogid.notif.ProximityReceiver;
 import com.example.audiogid.sqlite.DataBaseContentProvider;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class AGMapFragment extends SupportMapFragment {
+public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
+
+	private static final double HOME_LON = 92.738501;
 	
-	 public static final String PROXIMITY_DETECTED = "com.example.audiogid.category.PROXIMITY";
-	 
-	 private GPSTracker gps;
-	 
-	 private Marker currentMarker;
-	 
-	 private DataBaseContentProvider provider;
+	private static final double HOME_LAT = 55.975218;
 	
-	 public void init(){
+	public static final String PROXIMITY_DETECTED = "com.example.audiogid.category.PROXIMITY";
+	 
+	private GPSTracker gps;
+	 
+	@SuppressWarnings("unused")
+	private Marker currentMarker;
+	 
+	 
+	
+	public void init(){
 		gps = new GPSTracker(getActivity(), (LocationListener) new MLocationListener(getActivity().getApplicationContext()));
     	if(gps.canGetLocation()) {
     		Log.d("debug", "Можно определить координаты " + gps.getLatitude() + " " + gps.getLongitude());
@@ -42,77 +52,74 @@ public class AGMapFragment extends SupportMapFragment {
     	getMap().getUiSettings().setZoomControlsEnabled(true);
     	getMap().setInfoWindowAdapter(infoWindowAdapter);
     	getMap().setOnInfoWindowClickListener(onInfoWindowClickListener);
-    	provider = new DataBaseContentProvider(getActivity()){
-
-			@Override
-			public void setRecord(double lng, double lat, String filename,
-					int d) {
-				AGMapFragment.this.setRecord(lng, lat, filename, d);
-			}};
-			getData();
+    	final DataBaseContentProvider provider = new DataBaseContentProvider(getActivity());
+    	provider.setRecordSetter(this);
+    	provider.getData();
 	}
 	 
-	 InfoWindowAdapter infoWindowAdapter = new InfoWindowAdapter() {
-
-	      @Override
-	      public View getInfoWindow(Marker marker) {
-	    	  currentMarker = marker;
-	    	  View v  = getActivity().getLayoutInflater().inflate(R.layout.infowindow_layout, null, false);
- 	          TextView title = (TextView) v.findViewById(R.id.title);
- 	          title.setText(marker.getTitle());
-	    	  return v;
-
-	      }
-
-	      @Override
-	      public View getInfoContents(Marker marker) {
-	        
-	    	  return null;
-	      }
-	    };
-	 
-	 OnInfoWindowClickListener onInfoWindowClickListener = new OnInfoWindowClickListener() {
-		 
-	        @Override
-	        public void onInfoWindowClick(Marker marker) {
-	        	showAudioActivity(marker.getTitle());
-	        }
-	    };
-	    
-	 private void showAudioActivity(final String title) {
-		 Intent intent = new Intent(this.getActivity(), AudioActivity.class);
-		 intent.putExtra("point_title", title);
-	     startActivity(intent);
-	 }
-	 
-	 private void getData() {
-		// TODO Auto-generated method stub
-		provider.getData();
-	}
-
-	private void toHomeLocation() {
-		// TODO Auto-generated method stub
+	@SuppressLint("InflateParams")
+	InfoWindowAdapter infoWindowAdapter = new InfoWindowAdapter() {
 		
+	    @Override
+	    public View getInfoWindow(final Marker marker) {
+	    	currentMarker = marker;
+	    	final View v  = getActivity().getLayoutInflater().inflate(R.layout.infowindow_layout, null, false);
+ 	        TextView title = (TextView) v.findViewById(R.id.title);
+ 	        title.setText(marker.getTitle());
+	    	return v;
+	    }
+
+	    @Override
+	    public View getInfoContents(final Marker marker) {    
+	    	return null;
+	    }
+	};
+	 
+	OnInfoWindowClickListener onInfoWindowClickListener = new OnInfoWindowClickListener() {
+		 
+		@Override
+	    public void onInfoWindowClick(final Marker marker) {
+			showAudioActivity(marker.getTitle());
+	    }
+	};
+	    
+	private void showAudioActivity(final String title) {
+		Intent intent = new Intent(this.getActivity(), AudioActivity.class);
+		intent.putExtra("point_title", title);
+	    startActivity(intent);
 	}
 
-	public void setRecord(double lng, double lat, String title, int d){
-
+	public void toHomeLocation() {
+		final CameraPosition cameraPosition = new CameraPosition.Builder()
+        .target(new LatLng(HOME_LAT, HOME_LON))
+        .zoom(12)
+        .build();
+    	
+    	final CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+    	getMap().moveCamera(cameraUpdate);
+	}
+	
+	@Override
+	public void setRecord(double lon, double lat, final String title, final int radius){
 		getMap().addMarker(new MarkerOptions().position(
-				new LatLng(lat, lng))
+				new LatLng(lat, lon))
     	        .title(title));
     	getMap().addCircle(new CircleOptions()
-    						.center(new LatLng(lat, lng))
-    						.radius(d)
+    						.center(new LatLng(lat, lon))
+    						.radius(radius)
     						.fillColor(0x300099cc)
     						.strokeColor(0xff0099cc)
     						.strokeWidth(2));
-    	 Intent notificationIntent = new Intent(getActivity().getApplicationContext(), ProximityReceiver.class); 
-    	 notificationIntent.setAction(PROXIMITY_DETECTED + "_" + lat + "_" + lng);
-    	 notificationIntent.addCategory(PROXIMITY_DETECTED);
-    	 notificationIntent.putExtra("title", title);
-    	 PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity().getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-    	 gps.getLocationManager().addProximityAlert(lat, lng, d, -1, pendingIntent);
-		
+    	setProximityAlert(lon, lat, title, radius);	
 	}
 
+	private void setProximityAlert(final double lng, final double lat, final String title,
+			int radius) {
+		final Intent notificationIntent = new Intent(getActivity().getApplicationContext(), ProximityReceiver.class); 
+    	notificationIntent.setAction(PROXIMITY_DETECTED + "_" + lat + "_" + lng);
+    	notificationIntent.addCategory(PROXIMITY_DETECTED);
+    	notificationIntent.putExtra("title", title);
+    	PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity().getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+    	gps.getLocationManager().addProximityAlert(lat, lng, radius, -1, pendingIntent);
+	}
 }

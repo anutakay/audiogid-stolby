@@ -9,13 +9,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-public abstract class DataBaseContentProvider implements IRecordSetter {
+public class DataBaseContentProvider{
 	
 	private final String LOG_TAG = "DataBaseActivity";
 	
 	private DBHelper dbHelper;
 	
-	private IRecordSetter recordSetter = this;
+	private IRecordSetter recordSetter;
 	
 	public DataBaseContentProvider(final Activity context) {
 		init(context);
