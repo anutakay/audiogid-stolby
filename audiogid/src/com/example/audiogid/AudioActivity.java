@@ -11,9 +11,10 @@ public class AudioActivity extends Activity {
         super.onCreate(savedInstanceState);
         
         Intent intent = this.getIntent();
-        if(intent != null && intent.hasExtra("point_title")) {
+        if(intent != null) {
         	String title = intent.getExtras().getString("point_title");
-        	this.setTitle(title);
+        	String audio = intent.getExtras().getString("point_audio");
+        	this.setTitle(title + " " + audio);
         }
 	}
 }

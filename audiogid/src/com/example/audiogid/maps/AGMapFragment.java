@@ -1,5 +1,8 @@
 package com.example.audiogid.maps;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -13,6 +16,7 @@ import com.example.audiogid.GPSTracker;
 import com.example.audiogid.IRecordSetter;
 import com.example.audiogid.MLocationListener;
 import com.example.audiogid.R;
+import com.example.audiogid.model.Record;
 import com.example.audiogid.notif.ProximityReceiver;
 import com.example.audiogid.sqlite.DataBaseContentProvider;
 import com.google.android.gms.maps.CameraUpdate;
@@ -35,11 +39,11 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
 	public static final String PROXIMITY_DETECTED = "com.example.audiogid.category.PROXIMITY";
 	 
 	private GPSTracker gps;
+	
+	private Map<String, Record> recordMap = new HashMap<String, Record>();
 	 
 	@SuppressWarnings("unused")
-	private Marker currentMarker;
-	 
-	 
+	private Marker currentMarker;	 
 	
 	public void init(){
 		gps = new GPSTracker(getActivity(), (LocationListener) new MLocationListener(getActivity().getApplicationContext()));
@@ -79,13 +83,17 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
 		 
 		@Override
 	    public void onInfoWindowClick(final Marker marker) {
-			showAudioActivity(marker.getTitle());
+			showAudioActivity(marker.getId());
 	    }
 	};
 	    
-	private void showAudioActivity(final String title) {
+	private void showAudioActivity(final String id) {
+		
+		Record r = this.recordMap.get(id);
+		
 		Intent intent = new Intent(this.getActivity(), AudioActivity.class);
-		intent.putExtra("point_title", title);
+		intent.putExtra("point_title", r.getTitle());
+		intent.putExtra("point_audio", r.getAudio());
 	    startActivity(intent);
 	}
 
@@ -101,7 +109,7 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
 	
 	@Override
 	public void setRecord(double lon, double lat, final String title, final int radius){
-		getMap().addMarker(new MarkerOptions().position(
+		Marker m = getMap().addMarker(new MarkerOptions().position(
 				new LatLng(lat, lon))
     	        .title(title));
     	getMap().addCircle(new CircleOptions()
@@ -111,6 +119,9 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
     						.strokeColor(0xff0099cc)
     						.strokeWidth(2));
     	setProximityAlert(lon, lat, title, radius);	
+    	
+    	Record record = new Record(lon, lat, title, "example.mp3");
+    	recordMap.put(m.getId(), record);
 	}
 
 	private void setProximityAlert(final double lng, final double lat, final String title,
