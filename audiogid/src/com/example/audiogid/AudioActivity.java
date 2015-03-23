@@ -6,15 +6,33 @@ import android.os.Bundle;
 
 public class AudioActivity extends Activity {
 	
+	private Player mPlayer;
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+        String title = null;
+        String audio = null;
         Intent intent = this.getIntent();
         if(intent != null) {
-        	String title = intent.getExtras().getString("point_title");
-        	String audio = intent.getExtras().getString("point_audio");
+        	title = intent.getExtras().getString("point_title");
+        	audio = intent.getExtras().getString("point_audio");
         	this.setTitle(title + " " + audio);
         }
+        
+        setContentView(R.layout.activity_audio);
+		mPlayer = new Player( this, findViewById(R.id.mainView));
+		play(audio);
 	}
+	
+	private void play(final String audio) {
+        mPlayer.playAudio(audio);
+	}
+	
+	@Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPlayer.destroy();
+    }
+
 }

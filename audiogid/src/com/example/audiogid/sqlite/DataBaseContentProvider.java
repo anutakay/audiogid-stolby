@@ -3,6 +3,7 @@ package com.example.audiogid.sqlite;
 import java.io.IOException;
 
 import com.example.audiogid.IRecordSetter;
+import com.example.audiogid.model.Record;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -42,13 +43,15 @@ public class DataBaseContentProvider{
     		  int latColIndex = c.getColumnIndex(Constants.LAT_COLUMN);
     		  int titleColIndex = c.getColumnIndex(Constants.TITLE_COLUMN);
     		  int diameterColIndex = c.getColumnIndex(Constants.DIAMETER_COLUMN);
+    		  int audioColIndex = c.getColumnIndex(Constants.AUDIO_FILENAME_COLUMN);
     		  do {
     			  if(recordSetter == null) { break; }
-    			  recordSetter.setRecord( c.getDouble(longColIndex),
-    					  c.getDouble(latColIndex), 
-    					  c.getString(titleColIndex), 
-    					  c.getInt(diameterColIndex)
-    					  );
+    			  Record r = new Record(c.getDouble(longColIndex),
+    					  				c.getDouble(latColIndex), 
+    					  				c.getInt(diameterColIndex),  
+    					  				c.getString(titleColIndex), 
+    					  				c.getString(audioColIndex));
+    			  recordSetter.setRecord(r);
     		  } while(c.moveToNext());
     	  }else{
     		  Log.d(LOG_TAG, "Empty records table");

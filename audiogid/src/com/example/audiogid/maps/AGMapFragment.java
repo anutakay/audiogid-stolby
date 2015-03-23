@@ -32,6 +32,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
 
+	private static final Class<AudioActivity> AUDIO_ACTIVITY_CLASS = AudioActivity.class;
+
 	private static final double HOME_LON = 92.738501;
 	
 	private static final double HOME_LAT = 55.975218;
@@ -91,7 +93,7 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
 		
 		Record r = this.recordMap.get(id);
 		
-		Intent intent = new Intent(this.getActivity(), AudioActivity.class);
+		Intent intent = new Intent(this.getActivity(), AUDIO_ACTIVITY_CLASS);
 		intent.putExtra("point_title", r.getTitle());
 		intent.putExtra("point_audio", r.getAudio());
 	    startActivity(intent);
@@ -108,19 +110,21 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
 	}
 	
 	@Override
-	public void setRecord(double lon, double lat, final String title, final int radius){
+	public void setRecord(final Record record){
+		if(record.getAudio() == null) {
+			return;
+		}
 		Marker m = getMap().addMarker(new MarkerOptions().position(
-				new LatLng(lat, lon))
-    	        .title(title));
+				new LatLng(record.getLat(), record.getLon()))
+    	        .title(record.getTitle()));
     	getMap().addCircle(new CircleOptions()
-    						.center(new LatLng(lat, lon))
-    						.radius(radius)
+    						.center(new LatLng(record.getLat(), record.getLon()))
+    						.radius(record.getRadius())
     						.fillColor(0x300099cc)
     						.strokeColor(0xff0099cc)
     						.strokeWidth(2));
-    	setProximityAlert(lon, lat, title, radius);	
+    	setProximityAlert(record.getLon(), record.getLat(), record.getTitle(), record.getRadius());	
     	
-    	Record record = new Record(lon, lat, title, "example.mp3");
     	recordMap.put(m.getId(), record);
 	}
 
