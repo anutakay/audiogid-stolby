@@ -12,6 +12,8 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends FragmentActivity {
 	
+	private static final double HOME_LON = 92.738501;
+	private static final double HOME_LAT = 55.975218;
 	AGMapFragment mapFragment;
 	
     @Override
@@ -45,7 +47,7 @@ public class MainActivity extends FragmentActivity {
     
     private void toHomeLocation(){
     	CameraPosition cameraPosition = new CameraPosition.Builder()
-        .target(new LatLng(55.975218, 92.738501))
+        .target(new LatLng(HOME_LAT, HOME_LON))
         .zoom(12)
         .build();
     	
