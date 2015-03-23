@@ -24,51 +24,52 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class AGMapFragment extends SupportMapFragment {
 	
 	 public static final String PROXIMITY_DETECTED = "com.example.audiogid.category.PROXIMITY";
+	 
 	 private GPSTracker gps;
-	 Marker currentMarker;
-	 DataBaseContentProvider provider;
+	 
+	 private Marker currentMarker;
+	 
+	 private DataBaseContentProvider provider;
 	
 	 public void init(){
 		gps = new GPSTracker(getActivity(), (LocationListener) new MLocationListener(getActivity().getApplicationContext()));
-    	if(gps.canGetLocation()){
+    	if(gps.canGetLocation()) {
     		Log.d("debug", "Можно определить координаты " + gps.getLatitude() + " " + gps.getLongitude());
     	} else {
     		Log.d("debug", "Нельзя определить координаты");
     	}
     	toHomeLocation();
-    	
-    	
     	getMap().getUiSettings().setZoomControlsEnabled(true);
-    	getMap().setInfoWindowAdapter(new InfoWindowAdapter() {
-
-    	      @Override
-    	      public View getInfoWindow(Marker marker) {
-    	    	  currentMarker = marker;
-    	    	  View v  = getActivity().getLayoutInflater().inflate(R.layout.infowindow_layout, null, false);
-      	          TextView title = (TextView) v.findViewById(R.id.title);
-      	          title.setText(marker.getTitle());
-    	    	  return v;
-
-    	      }
-
-    	      @Override
-    	      public View getInfoContents(Marker marker) {
-    	        
-    	    	  return null;
-    	      }
-    	    });
-    	 
-    	 getMap().setOnInfoWindowClickListener(onInfoWindowClickListener);
-    	  provider = new DataBaseContentProvider(getActivity()){
+    	getMap().setInfoWindowAdapter(infoWindowAdapter);
+    	getMap().setOnInfoWindowClickListener(onInfoWindowClickListener);
+    	provider = new DataBaseContentProvider(getActivity()){
 
 			@Override
-			protected void setRecord(double lng, double lat, String filename,
+			public void setRecord(double lng, double lat, String filename,
 					int d) {
-				// TODO Auto-generated method stub
 				AGMapFragment.this.setRecord(lng, lat, filename, d);
 			}};
 			getData();
 	}
+	 
+	 InfoWindowAdapter infoWindowAdapter = new InfoWindowAdapter() {
+
+	      @Override
+	      public View getInfoWindow(Marker marker) {
+	    	  currentMarker = marker;
+	    	  View v  = getActivity().getLayoutInflater().inflate(R.layout.infowindow_layout, null, false);
+ 	          TextView title = (TextView) v.findViewById(R.id.title);
+ 	          title.setText(marker.getTitle());
+	    	  return v;
+
+	      }
+
+	      @Override
+	      public View getInfoContents(Marker marker) {
+	        
+	    	  return null;
+	      }
+	    };
 	 
 	 OnInfoWindowClickListener onInfoWindowClickListener = new OnInfoWindowClickListener() {
 		 
@@ -94,11 +95,11 @@ public class AGMapFragment extends SupportMapFragment {
 		
 	}
 
-	public void setRecord(double lng, double lat, String filename, int d){
+	public void setRecord(double lng, double lat, String title, int d){
 
 		getMap().addMarker(new MarkerOptions().position(
 				new LatLng(lat, lng))
-    	        .title(filename));
+    	        .title(title));
     	getMap().addCircle(new CircleOptions()
     						.center(new LatLng(lat, lng))
     						.radius(d)
@@ -108,7 +109,7 @@ public class AGMapFragment extends SupportMapFragment {
     	 Intent notificationIntent = new Intent(getActivity().getApplicationContext(), ProximityReceiver.class); 
     	 notificationIntent.setAction(PROXIMITY_DETECTED + "_" + lat + "_" + lng);
     	 notificationIntent.addCategory(PROXIMITY_DETECTED);
-    	 notificationIntent.putExtra("title", filename);
+    	 notificationIntent.putExtra("title", title);
     	 PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity().getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
     	 gps.getLocationManager().addProximityAlert(lat, lng, d, -1, pendingIntent);
 		

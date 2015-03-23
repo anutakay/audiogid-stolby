@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.example.audiogid.IRecordSetter;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,8 +17,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-
-public abstract class DataBaseContentProvider {
+public abstract class DataBaseContentProvider implements IRecordSetter {
 	
 	final String LOG_TAG = "DataBaseActivity";
 	
@@ -26,12 +27,14 @@ public abstract class DataBaseContentProvider {
 	
 	private Activity context;
 	
-	public DataBaseContentProvider(Activity _context){
-		context = _context;
+	private IRecordSetter recordSetter = this;
+	
+	public DataBaseContentProvider(final Activity context) {
+		this.context = context;
 		init(context);
 	}
-
-    private void init(Context context){
+	
+    private void init(final Activity context){
     	dbHelper = new DBHelper(context);
         try {
 			dbHelper.createDataBase();
@@ -40,18 +43,23 @@ public abstract class DataBaseContentProvider {
 		}
     }
     
+    public void setRecordSetter(final IRecordSetter recordSetter) {
+		this.recordSetter = recordSetter;
+	}
+    
     public final void getData(){
     	SQLiteDatabase db = dbHelper.getReadableDatabase();
     	Cursor c = db.query(Constants.RECORDS_TABLE, null, null, null, null, null, null);
     	  if (c.moveToFirst()) {
-    		  int longColIndex = c.getColumnIndex(Constants.LONG_COLUMN);
+    		  int longColIndex = c.getColumnIndex(Constants.LON_COLUMN);
     		  int latColIndex = c.getColumnIndex(Constants.LAT_COLUMN);
-    		  int filenameColIndex = c.getColumnIndex(Constants.TITLE_COLUMN);
+    		  int titleColIndex = c.getColumnIndex(Constants.TITLE_COLUMN);
     		  int diameterColIndex = c.getColumnIndex(Constants.DIAMETER_COLUMN);
     		  do {
-    			  setRecord( c.getDouble(longColIndex),
+    			  if(recordSetter == null) { break; }
+    			  recordSetter.setRecord( c.getDouble(longColIndex),
     					  c.getDouble(latColIndex), 
-    					  c.getString(filenameColIndex), 
+    					  c.getString(titleColIndex), 
     					  c.getInt(diameterColIndex)
     					  );
     		  } while(c.moveToNext());
@@ -61,8 +69,7 @@ public abstract class DataBaseContentProvider {
     	  c.close();
     }
     
-    abstract protected void setRecord(double lon, double lat, String filename, int d);
-
+    
     
     class DBHelper extends SQLiteOpenHelper {
     	
@@ -74,33 +81,33 @@ public abstract class DataBaseContentProvider {
         
         Context mContext;
 
-        public DBHelper(Context context) {
+        public DBHelper(final Context context) {
         	super(context, DB_NAME, null, 1);
             this.mContext = context;
         }
 
         @Override
-        public void onCreate(SQLiteDatabase db) {
+        public void onCreate(final SQLiteDatabase db) {
         }
 
         @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
 
         } 
         
-        private boolean checkDataBase(){
+        private boolean checkDataBase() {
         	sPref = ((Activity) context).getPreferences(Context.MODE_PRIVATE);  
             Boolean correctVersion = false;
             correctVersion = sPref.getInt("db_version", 1) == DB_VERSION;
             return isDataBaseExist() && correctVersion;
         }
         
-        private boolean isDataBaseExist(){
+        private boolean isDataBaseExist() {
         	File dbFile = new File(DB_PATH + DB_NAME);        	
         	return dbFile.exists();
         };
         
-        public void createDataBase() throws IOException{
+        public void createDataBase() throws IOException {
         	 
             boolean dbExist = checkDataBase();
      
@@ -131,7 +138,7 @@ public abstract class DataBaseContentProvider {
      
         }
 
-        private void copyDataBase() throws IOException{
+        private void copyDataBase() throws IOException {
         	
             InputStream myInput = mContext.getAssets().open(DB_NAME + Constants.EXT);
      
