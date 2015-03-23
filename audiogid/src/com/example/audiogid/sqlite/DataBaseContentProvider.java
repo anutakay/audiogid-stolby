@@ -6,18 +6,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.example.audiogid.notif.NotificationUtils;
-
-import android.support.v4.app.FragmentActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Bundle;
 import android.util.Log;
 
 
@@ -94,7 +89,7 @@ public abstract class DataBaseContentProvider {
         } 
         
         private boolean checkDataBase(){
-        	sPref = ((Activity) context).getPreferences(context.MODE_PRIVATE);  
+        	sPref = ((Activity) context).getPreferences(Context.MODE_PRIVATE);  
             Boolean correctVersion = false;
             correctVersion = sPref.getInt("db_version", 1) == DB_VERSION;
             return isDataBaseExist() && correctVersion;
@@ -127,7 +122,7 @@ public abstract class DataBaseContentProvider {
                     throw new Error("Error copying database");
      
                 }
-                sPref = ((Activity) context).getPreferences(context.MODE_PRIVATE);
+                sPref = ((Activity) context).getPreferences(Context.MODE_PRIVATE);
                 Editor ed = sPref.edit();
                 ed.putInt("db_version", DB_VERSION);
                 ed.commit();

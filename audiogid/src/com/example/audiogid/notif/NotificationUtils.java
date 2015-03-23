@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.example.audiogid.R;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,15 +14,14 @@ import android.support.v4.app.NotificationCompat;
 
 public class NotificationUtils {
 	
-	private static final String TAG = NotificationUtils.class.getSimpleName();
-	
 	private static NotificationUtils instance;
 	
-	private static Context context;
+	private Context context;
 	private NotificationManager manager; // Системная утилита, упарляющая уведомлениями
 	private int lastId = 0; //постоянно увеличивающееся поле, уникальный номер каждого уведомления
 	private HashMap<Integer, Notification> notifications; //массив ключ-значение на все отображаемые пользователю уведомления
 
+	@SuppressLint("UseSparseArrays")
 	private NotificationUtils(Context context){
 	    this.context = context;
 	    manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -29,7 +29,7 @@ public class NotificationUtils {
 	  }
 	
 	public static NotificationUtils getInstance(Context context){
-	    if(instance==null){
+	    if(instance == null){
 	        instance = new NotificationUtils(context);
 	    } else{
 	        instance.context = context;
@@ -37,6 +37,7 @@ public class NotificationUtils {
 	    return instance;
 	  }
 	
+	@SuppressWarnings("deprecation")
 	public int createInfoNotification(String message){
 	    Intent notificationIntent = new Intent(context, ProximityActivity.class);
 		// Intent notificationIntent = new Intent();// по клику на уведомлении откроется HomeActivity
@@ -58,6 +59,7 @@ public class NotificationUtils {
 	        return lastId++;
 	  }
 	
+	@SuppressWarnings("deprecation")
 	public int createProximityNotification(String title){
 	    Intent notificationIntent = new Intent(context, ProximityActivity.class);
 	    notificationIntent.putExtra("title", title);

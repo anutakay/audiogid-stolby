@@ -6,8 +6,6 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
-import android.util.Log;
-
 
 public class MLocationListener implements LocationListener {
 	
@@ -43,7 +41,8 @@ public class MLocationListener implements LocationListener {
 	}
 	
 	
-	 private void createNotification(){
+	 @SuppressWarnings("unused")
+	private void createNotification(){
 			NotificationUtils n = NotificationUtils.getInstance(mContext);
 		    n.createInfoNotification("prox notification");
 		}
