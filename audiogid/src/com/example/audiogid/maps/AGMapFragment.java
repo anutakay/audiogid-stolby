@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.audiogid.AudioActivity;
 import com.example.audiogid.GPSTracker;
 import com.example.audiogid.MLocationListener;
 import com.example.audiogid.R;
@@ -73,9 +74,15 @@ public class AGMapFragment extends SupportMapFragment {
 		 
 	        @Override
 	        public void onInfoWindowClick(Marker marker) {
-	        	 Log.d("Debug", "Нажали на окно с информацией");
+	        	showAudioActivity(marker.getTitle());
 	        }
 	    };
+	    
+	 private void showAudioActivity(final String title) {
+		 Intent intent = new Intent(this.getActivity(), AudioActivity.class);
+		 intent.putExtra("point_title", title);
+	     startActivity(intent);
+	 }
 	 
 	 private void getData() {
 		// TODO Auto-generated method stub
