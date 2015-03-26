@@ -1,4 +1,4 @@
-package com.example.audiogid.notif;
+package com.example.audiogid.notification;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

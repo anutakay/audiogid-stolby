@@ -17,7 +17,7 @@ import com.example.audiogid.IRecordSetter;
 import com.example.audiogid.MLocationListener;
 import com.example.audiogid.R;
 import com.example.audiogid.model.Record;
-import com.example.audiogid.notif.ProximityReceiver;
+import com.example.audiogid.notification.ProximityReceiver;
 import com.example.audiogid.sqlite.DataBaseContentProvider;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;

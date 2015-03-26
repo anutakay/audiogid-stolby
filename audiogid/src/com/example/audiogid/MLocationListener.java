@@ -1,6 +1,6 @@
 package com.example.audiogid;
 
-import com.example.audiogid.notif.NotificationUtils;
+import com.example.audiogid.notification.NotificationUtils;
 
 import android.content.Context;
 import android.location.Location;

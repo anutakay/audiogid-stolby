@@ -1,4 +1,4 @@
-package com.example.audiogid.notif;
+package com.example.audiogid.notification;
 
 import java.util.HashMap;
 
