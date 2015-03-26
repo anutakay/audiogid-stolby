@@ -1,4 +1,4 @@
-package com.example.audiogid;
+package com.example.audiogid.maps;
 
 import android.app.AlertDialog;
 import android.app.Service;

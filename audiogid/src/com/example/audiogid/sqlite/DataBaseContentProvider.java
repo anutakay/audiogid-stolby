@@ -2,7 +2,7 @@ package com.example.audiogid.sqlite;
 
 import java.io.IOException;
 
-import com.example.audiogid.IRecordSetter;
+import com.example.audiogid.model.IRecordSetter;
 import com.example.audiogid.model.Record;
 
 import android.app.Activity;

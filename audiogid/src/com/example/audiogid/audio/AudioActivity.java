@@ -1,4 +1,8 @@
-package com.example.audiogid;
+package com.example.audiogid.audio;
+
+import com.example.audiogid.R;
+import com.example.audiogid.R.id;
+import com.example.audiogid.R.layout;
 
 import android.app.Activity;
 import android.content.Intent;

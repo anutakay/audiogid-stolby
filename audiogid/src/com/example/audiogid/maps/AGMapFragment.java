@@ -11,11 +11,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.audiogid.AudioActivity;
-import com.example.audiogid.GPSTracker;
-import com.example.audiogid.IRecordSetter;
-import com.example.audiogid.MLocationListener;
 import com.example.audiogid.R;
+import com.example.audiogid.audio.AudioActivity;
+import com.example.audiogid.model.IRecordSetter;
 import com.example.audiogid.model.Record;
 import com.example.audiogid.notification.ProximityReceiver;
 import com.example.audiogid.sqlite.DataBaseContentProvider;
