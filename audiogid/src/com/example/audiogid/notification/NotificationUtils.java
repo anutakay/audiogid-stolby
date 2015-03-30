@@ -3,6 +3,7 @@ package com.example.audiogid.notification;
 import java.util.HashMap;
 
 import com.example.audiogid.R;
+import com.example.audiogid.audio.AudioActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -60,9 +61,8 @@ public class NotificationUtils {
 	  }
 	
 	@SuppressWarnings("deprecation")
-	public int createProximityNotification(String title){
-	    Intent notificationIntent = new Intent(context, ProximityActivity.class);
-	    notificationIntent.putExtra("title", title);
+	public int createProximityNotification(final String title, final String audio){
+	    Intent notificationIntent = createAudioIntent(title, audio);
 		// Intent notificationIntent = new Intent();// по клику на уведомлении откроется HomeActivity
 	    NotificationCompat.Builder nb = new NotificationCompat.Builder(context)
 	//NotificationCompat.Builder nb = new NotificationBuilder(context) //для версии Android > 3.0
@@ -81,4 +81,11 @@ public class NotificationUtils {
 	        notifications.put(lastId, notification); //теперь мы можем обращаться к нему по id
 	        return lastId++;
 	  }
+	
+	private Intent createAudioIntent(final String title, final String audio) {
+		Intent intent = new Intent(context, AudioActivity.class);
+	    intent.putExtra("point_title", title);
+	    intent.putExtra("point_audio", audio);
+	    return intent;
+	}
 }

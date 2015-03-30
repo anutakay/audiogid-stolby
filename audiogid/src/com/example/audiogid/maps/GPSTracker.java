@@ -41,20 +41,21 @@ public class GPSTracker extends Service implements LocationListener {
  
     private GPSTracker(final Context context) {
         this.context = context;
+        locationManager = (LocationManager) context
+                .getSystemService(LOCATION_SERVICE);
         getLocation();
         Log.d("debug", "Сервис запущен");
     }
     
-    public GPSTracker(Context context, LocationListener listener){
+    public GPSTracker(final Context context, final LocationListener listener) {
     	this(context);
     	locationListener = listener;
     }
     
     public Location getLocation() {
+    	locationManager = (LocationManager) context
+                .getSystemService(LOCATION_SERVICE);
         try {
-            locationManager = (LocationManager) context
-                    .getSystemService(LOCATION_SERVICE);
- 
             isGPSEnabled = locationManager
                     .isProviderEnabled(LocationManager.GPS_PROVIDER);
  
@@ -96,7 +97,7 @@ public class GPSTracker extends Service implements LocationListener {
                 }
             }
  
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
  
@@ -104,27 +105,27 @@ public class GPSTracker extends Service implements LocationListener {
     }
 
 	@Override
-	public void onLocationChanged(Location location) {
+	public void onLocationChanged(final Location location) {
 		locationListener.onLocationChanged(location);
 	}
 
 	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
+	public void onStatusChanged(final String provider, final  int status, final  Bundle extras) {
 		locationListener.onStatusChanged(provider, status, extras);	
 	}
 
 	@Override
-	public void onProviderEnabled(String provider) {
+	public void onProviderEnabled(final String provider) {
 		locationListener.onProviderEnabled(provider);
 	}
 
 	@Override
-	public void onProviderDisabled(String provider) {
+	public void onProviderDisabled(final String provider) {
 		locationListener.onProviderDisabled(provider);
 	}
 
 	@Override
-	public IBinder onBind(Intent intent) {
+	public IBinder onBind(final Intent intent) {
 		return null;
 	}
 	
@@ -176,6 +177,8 @@ public class GPSTracker extends Service implements LocationListener {
     }
     
     public LocationManager getLocationManager(){
+    	locationManager = (LocationManager) context
+                .getSystemService(LOCATION_SERVICE);
     	return locationManager;
     }
 }

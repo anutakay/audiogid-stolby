@@ -46,7 +46,7 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
 	private Marker currentMarker;	 
 	
 	public void init(){
-		gps = new GPSTracker(getActivity(), (LocationListener) new MLocationListener(getActivity().getApplicationContext()));
+		gps = new GPSTracker(getActivity(), (LocationListener) new MLocationListener(getActivity().getApplicationContext(), getMap()));
     	if(gps.canGetLocation()) {
     		Log.d("debug", "Можно определить координаты " + gps.getLatitude() + " " + gps.getLongitude());
     	} else {
@@ -59,6 +59,14 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
     	final DataBaseContentProvider provider = new DataBaseContentProvider(getActivity());
     	provider.setRecordSetter(this);
     	provider.getData();
+    	///
+    	setExampleRecord();
+    	///
+	}
+	
+	private void setExampleRecord() {
+		Record record = new Record(0., 0., 10000, "title", "audio");
+		this.setRecord(record);
 	}
 	 
 	@SuppressLint("InflateParams")
@@ -121,18 +129,24 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
     						.fillColor(0x300099cc)
     						.strokeColor(0xff0099cc)
     						.strokeWidth(2));
-    	setProximityAlert(record.getLon(), record.getLat(), record.getTitle(), record.getRadius());	
+    	setProximityAlert(record);	
     	
     	recordMap.put(m.getId(), record);
 	}
 
-	private void setProximityAlert(final double lng, final double lat, final String title,
-			int radius) {
+	private void setProximityAlert(final Record record) {
+		final Intent notificationIntent = getProximityIntent(record);
+    	PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+    	gps.getLocationManager().addProximityAlert(record.getLat(), record.getLon(), record.getRadius(), 1000000, pendingIntent);
+    	Log.d("Debug", "Установлен ProximityAlert на точку " + record.getLat() + " " + record.getLon());
+	}
+	
+	private Intent getProximityIntent(final Record record) {
 		final Intent notificationIntent = new Intent(getActivity().getApplicationContext(), ProximityReceiver.class); 
-    	notificationIntent.setAction(PROXIMITY_DETECTED + "_" + lat + "_" + lng);
+    	notificationIntent.setAction(PROXIMITY_DETECTED + "_" + record.getLat() + "_" + record.getLon());
     	notificationIntent.addCategory(PROXIMITY_DETECTED);
-    	notificationIntent.putExtra("title", title);
-    	PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity().getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-    	gps.getLocationManager().addProximityAlert(lat, lng, radius, -1, pendingIntent);
+    	notificationIntent.putExtra("title", record.getTitle());
+    	notificationIntent.putExtra("audio", record.getAudio());
+		return notificationIntent;
 	}
 }

@@ -1,6 +1,8 @@
 package com.example.audiogid.model;
 
-public class Record {
+import java.io.Serializable;
+
+public class Record implements Serializable {
 	
 	private double lon;
 	
