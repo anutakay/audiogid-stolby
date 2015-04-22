@@ -1,5 +1,8 @@
 package com.example.audiogid.notification;
 
+import com.example.audiogid.MainActivity;
+import com.example.audiogid.audio.AudioActivity;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -22,11 +25,22 @@ public class ProximityReceiver extends BroadcastReceiver {
 	
 	private void processProximity(final Context context, final String title, final String audio, final String snippet ) {
 		log(title, audio);
-		createNotification(context, title, audio);
+		//createNotification(context, title, audio);
+		notifyInMap(context, snippet);
 	}
 	
 	private void log(final String title, final String audio) {
 		Log.d("Debug", "Мы приблизились к точке " + title + "\t" + audio);
+	}
+	
+	private void notifyInMap(final Context context, final String snippet) {
+		context.startActivity(this.createIntent(context, snippet));
+	}
+	
+	private Intent createIntent(final Context context, final String snippet) {
+		Intent intent = new Intent(context, MainActivity.class);
+	    intent.putExtra("snippet", snippet);
+	    return intent;
 	}
 	
 	private void createNotification(final Context context, final String title, final String audio) {
