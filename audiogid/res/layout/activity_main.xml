@@ -24,4 +24,22 @@
 	    android:padding="10dp"
 	    android:layout_margin="5dp" />
 
+	<Button
+	    android:id="@+id/button2"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+		android:layout_alignParentLeft="true"
+	    android:text="Первая точка"
+	    android:onClick="firstButtonClick" />
+
+	<Button
+	    android:id="@+id/button3"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:layout_toRightOf="@id/button2"
+	    android:text="Вторая точка"
+	    android:onClick="secondButtonClick" />
+
 </RelativeLayout>

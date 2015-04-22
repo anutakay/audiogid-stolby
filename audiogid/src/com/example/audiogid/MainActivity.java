@@ -92,4 +92,12 @@ public class MainActivity extends FragmentActivity implements LocationSource, Lo
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void firstButtonClick(View v) {
+		Log.d("Debug", "firstButtonClick");
+	}
+	
+	public void secondButtonClick(View v) {
+		Log.d("Debug", "secondButtonClick");
+	}
 }
