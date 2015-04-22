@@ -14,12 +14,13 @@ public class ProximityReceiver extends BroadcastReceiver {
         final Boolean entering = intent.getBooleanExtra(key, false);
         final String title = intent.getExtras().getString("title");
         final String audio = intent.getExtras().getString("audio");
+        final String snippet = intent.getExtras().getString("snippet");
         if (entering && title != null) {  	
-        	processProximity(context, title, audio);
+        	processProximity(context, title, audio, snippet);
         }
 	}
 	
-	private void processProximity(final Context context, final String title, final String audio ) {
+	private void processProximity(final Context context, final String title, final String audio, final String snippet ) {
 		log(title, audio);
 		createNotification(context, title, audio);
 	}

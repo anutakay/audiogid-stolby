@@ -43,4 +43,8 @@ public class Record implements Serializable {
 		return audio;
 	}
 	
+	public String getSnippet() {
+		return getTitle() + getLat() + getLon();
+	}
+	
 }

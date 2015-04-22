@@ -40,7 +40,11 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
 	 
 	private GPSTracker gps;
 	
+	//По id маркера можно получить запись, айди можно получить из маркера.
 	private Map<String, Record> recordMap = new HashMap<String, Record>();
+	
+	//По сниппету можно получить маркер, сниппет можно получить по записи
+	private Map<String, Marker> markerMap = new HashMap<String, Marker>();
 	 
 	@SuppressWarnings("unused")
 	private Marker currentMarker;	 
@@ -59,14 +63,11 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
     	final DataBaseContentProvider provider = new DataBaseContentProvider(getActivity());
     	provider.setRecordSetter(this);
     	provider.getData();
-    	///
-    	setExampleRecord();
-    	///
 	}
 	
-	private void setExampleRecord() {
-		Record record = new Record(0., 0., 10000, "title", "audio");
-		this.setRecord(record);
+	private void showInfoWindow(final String snippet){
+		Marker marker = markerMap.get(snippet);
+		marker.showInfoWindow();
 	}
 	 
 	@SuppressLint("InflateParams")
@@ -116,30 +117,30 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
 	}
 	
 	@Override
-	public void setRecord(final Record record){
+	public void setRecord(final Record record) {
 		if(record.getAudio() == null) {
 			return;
 		}
 		Marker m = getMap().addMarker(new MarkerOptions().position(
 				new LatLng(record.getLat(), record.getLon()))
-    	        .title(record.getTitle()));
+    	        .title(record.getTitle())
+    	        .snippet(record.getSnippet()));
     	getMap().addCircle(new CircleOptions()
     						.center(new LatLng(record.getLat(), record.getLon()))
     						.radius(record.getRadius())
     						.fillColor(0x300099cc)
     						.strokeColor(0xff0099cc)
     						.strokeWidth(2));
-    	setProximityAlert(record);	
-    	
     	recordMap.put(m.getId(), record);
+    	markerMap.put(m.getSnippet(), m);
+    	setProximityAlert(record);
 	}
 
 	private void setProximityAlert(final Record record) {
 		final Intent notificationIntent = getProximityIntent(record);
     	PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
     	gps.getLocationManager().addProximityAlert(record.getLat(), record.getLon(), record.getRadius(), 1000000, pendingIntent);
-    	Log.d("Debug", "Установлен ProximityAlert на точку " + record.getLat() + " " + record.getLon());
-	}
+    }
 	
 	private Intent getProximityIntent(final Record record) {
 		final Intent notificationIntent = new Intent(getActivity().getApplicationContext(), ProximityReceiver.class); 
@@ -147,6 +148,7 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
     	notificationIntent.addCategory(PROXIMITY_DETECTED);
     	notificationIntent.putExtra("title", record.getTitle());
     	notificationIntent.putExtra("audio", record.getAudio());
+    	notificationIntent.putExtra("snippet", record.getSnippet());
 		return notificationIntent;
 	}
 }
