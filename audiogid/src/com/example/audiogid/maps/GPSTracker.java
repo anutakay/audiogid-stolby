@@ -106,22 +106,30 @@ public class GPSTracker extends Service implements LocationListener {
 
 	@Override
 	public void onLocationChanged(final Location location) {
-		locationListener.onLocationChanged(location);
+		if (locationListener != null) {
+			locationListener.onLocationChanged(location);
+		}
 	}
 
 	@Override
 	public void onStatusChanged(final String provider, final  int status, final  Bundle extras) {
-		locationListener.onStatusChanged(provider, status, extras);	
+		if (locationListener != null) {
+			locationListener.onStatusChanged(provider, status, extras);
+		}
 	}
 
 	@Override
 	public void onProviderEnabled(final String provider) {
-		locationListener.onProviderEnabled(provider);
+		if (locationListener != null) {
+			locationListener.onProviderEnabled(provider);
+		}
 	}
 
 	@Override
 	public void onProviderDisabled(final String provider) {
-		locationListener.onProviderDisabled(provider);
+		if (locationListener != null) {
+			locationListener.onProviderDisabled(provider);
+		}
 	}
 
 	@Override
@@ -170,13 +178,13 @@ public class GPSTracker extends Service implements LocationListener {
         alertDialog.show();
     }
     
-    public void stopUsingGPS(){
+    public void stopUsingGPS() {
         if(locationManager != null){
             locationManager.removeUpdates(GPSTracker.this);
         }      
     }
     
-    public LocationManager getLocationManager(){
+    public LocationManager getLocationManager() {
     	locationManager = (LocationManager) context
                 .getSystemService(LOCATION_SERVICE);
     	return locationManager;

@@ -34,7 +34,7 @@ public class MLocationListener implements LocationListener {
 		map.addMarker(new MarkerOptions().position(
 				new LatLng(location.getLatitude(), location.getLongitude()))
     	        .title("Мы сейчас"));
-		}
+	}
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
