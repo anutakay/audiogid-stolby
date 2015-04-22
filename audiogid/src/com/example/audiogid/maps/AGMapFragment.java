@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -28,7 +29,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
+public class AGMapFragment extends SupportMapFragment implements IRecordSetter, IProximityDetecter {
 
 	private static final Class<AudioActivity> AUDIO_ACTIVITY_CLASS = AudioActivity.class;
 
@@ -45,6 +46,9 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
 	
 	//По сниппету можно получить маркер, сниппет можно получить по записи
 	private Map<String, Marker> markerMap = new HashMap<String, Marker>();
+	
+	private Record firstRecord;
+	private Record secondRecord;
 	 
 	@SuppressWarnings("unused")
 	private Marker currentMarker;	 
@@ -134,6 +138,11 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
     	recordMap.put(m.getId(), record);
     	markerMap.put(m.getSnippet(), m);
     	setProximityAlert(record);
+    	if(firstRecord == null) {
+    		firstRecord = record;
+    	} else if(secondRecord == null) {
+    		secondRecord = record;
+    	}
 	}
 
 	private void setProximityAlert(final Record record) {
@@ -150,5 +159,17 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
     	notificationIntent.putExtra("audio", record.getAudio());
     	notificationIntent.putExtra("snippet", record.getSnippet());
 		return notificationIntent;
+	}
+	
+	@Override
+	public Intent getProximityIntent(int n) {
+		Intent intent;
+		if(n == 1) {
+			intent = getProximityIntent(firstRecord);
+		} else {
+			intent = getProximityIntent(secondRecord); 
+		}
+		intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
+		return intent;
 	}
 }

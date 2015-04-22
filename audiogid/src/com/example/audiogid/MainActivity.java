@@ -1,5 +1,6 @@
 package com.example.audiogid;
 
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.audiogid.maps.AGMapFragment;
+import com.example.audiogid.maps.IProximityDetecter;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -20,6 +22,7 @@ public class MainActivity extends FragmentActivity implements LocationSource, Lo
 	private GoogleMap mMap;
 	private LocationManager locationManager;
 	private OnLocationChangedListener locationListener;
+	private IProximityDetecter detecter;
 	
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -31,6 +34,7 @@ public class MainActivity extends FragmentActivity implements LocationSource, Lo
           finish();
           return;
         }
+        detecter = this.mapFragment;
         mapFragment.init();	
         setUpMapIfNeeded();
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -94,10 +98,14 @@ public class MainActivity extends FragmentActivity implements LocationSource, Lo
 	}
 	
 	public void firstButtonClick(View v) {
-		Log.d("Debug", "firstButtonClick");
+		Intent intent = detecter.getProximityIntent(1);
+		Log.d("Debug", "firstButtonClick " + intent);
+		sendBroadcast(intent);
 	}
 	
 	public void secondButtonClick(View v) {
-		Log.d("Debug", "secondButtonClick");
+		Intent intent = detecter.getProximityIntent(2);
+		Log.d("Debug", "secondButtonClick " + intent);
+		sendBroadcast(intent);
 	}
 }

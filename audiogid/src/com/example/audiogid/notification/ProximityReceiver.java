@@ -13,6 +13,7 @@ public class ProximityReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(final Context context, final  Intent intent) {
+		Log.d("Debug", "onReceive " + intent);
 		final String key = LocationManager.KEY_PROXIMITY_ENTERING;
         final Boolean entering = intent.getBooleanExtra(key, false);
         final String title = intent.getExtras().getString("title");
