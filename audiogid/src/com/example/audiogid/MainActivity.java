@@ -6,7 +6,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 
@@ -16,7 +15,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 
-public class MainActivity extends FragmentActivity implements LocationSource, LocationListener {
+public class MainActivity extends SavedFragmentActivity implements LocationSource, LocationListener {
 	
 	private AGMapFragment mapFragment;
 	private GoogleMap mMap;
@@ -25,7 +24,7 @@ public class MainActivity extends FragmentActivity implements LocationSource, Lo
 	private IProximityDetecter detecter;
 	
     @Override
-    protected void onCreate(final Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
        
@@ -52,6 +51,10 @@ public class MainActivity extends FragmentActivity implements LocationSource, Lo
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+    
+    protected void onNewIntent (final Intent intent) {
+    	Log.d("Debug", "получен новый интент");
     }
     
     public void onClick(final View b){
