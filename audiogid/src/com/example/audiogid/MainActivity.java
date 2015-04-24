@@ -1,5 +1,6 @@
 package com.example.audiogid;
 
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -47,6 +48,10 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+    
+    protected void onNewIntent (final Intent intent) {
+    	Log.d("Debug", "получен новый интент");
     }
     
     public void onClick(final View b){
