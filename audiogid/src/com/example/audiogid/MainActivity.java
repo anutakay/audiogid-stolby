@@ -14,7 +14,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 
-public class MainActivity extends FragmentActivity implements LocationSource, LocationListener {
+public class MainActivity extends SavedFragmentActivity implements LocationSource, LocationListener {
 	
 	private AGMapFragment mapFragment;
 	private GoogleMap mMap;
