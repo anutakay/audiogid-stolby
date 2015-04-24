@@ -47,7 +47,8 @@ public class ProximityReceiver extends BroadcastReceiver {
 	private Intent createIntent(final Context context, final String snippet) {
 		Intent intent = new Intent(context, MainActivity.class);
 	    intent.putExtra("snippet", snippet);
-	    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|
+                		Intent.FLAG_ACTIVITY_SINGLE_TOP);
 	    return intent;
 	}
 	
