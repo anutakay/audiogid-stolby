@@ -37,6 +37,9 @@ public class ProximityReceiver extends BroadcastReceiver {
 	
 	private void notifyInMap(final Context context, final String snippet) {
 		Activity currentActivity = ((AudiogidApp)context.getApplicationContext()).getCurrentActivity();
+		if(currentActivity == null) {
+			return;
+		}
 		currentActivity.startActivity(this.createIntent(currentActivity, snippet));
 		Log.d("Debug","Intent в Activity отправлен");
 	}
