@@ -28,7 +28,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
+public class AGMapFragment extends SupportMapFragment implements IRecordSetter, IProximityNotification {
 
 	private static final Class<AudioActivity> AUDIO_ACTIVITY_CLASS = AudioActivity.class;
 
@@ -150,5 +150,10 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter {
     	notificationIntent.putExtra("audio", record.getAudio());
     	notificationIntent.putExtra("snippet", record.getSnippet());
 		return notificationIntent;
+	}
+
+	@Override
+	public void onProximity(String snippet) {
+		showInfoWindow(snippet);
 	}
 }

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.audiogid.maps.AGMapFragment;
+import com.example.audiogid.maps.IProximityNotification;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -20,6 +21,7 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
 	private GoogleMap mMap;
 	private LocationManager locationManager;
 	private OnLocationChangedListener locationListener;
+	private IProximityNotification proximityNotification;
 	
     @Override
 	public void onCreate(final Bundle savedInstanceState) {
@@ -36,6 +38,8 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationManager.requestLocationUpdates( locationManager.getBestProvider(new Criteria(), true), 1000, 1, this);
         mMap.setLocationSource(this);
+        
+        proximityNotification = mapFragment;
     }
     
     private void setUpMapIfNeeded() {
@@ -51,7 +55,8 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
     }
     
     protected void onNewIntent (final Intent intent) {
-    	Log.d("Debug", "получен новый интент");
+    	final String snippet = intent.getExtras().getString("snippet");
+    	this.proximityNotification.onProximity(snippet);
     }
     
     public void onClick(final View b){
