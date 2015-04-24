@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.audiogid.maps.AGMapFragment;
-import com.example.audiogid.maps.IProximityDetecter;
+import com.example.audiogid.maps.IFakeProximityCreator;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -21,7 +21,7 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
 	private GoogleMap mMap;
 	private LocationManager locationManager;
 	private OnLocationChangedListener locationListener;
-	private IProximityDetecter detecter;
+	private IFakeProximityCreator detecter;
 	
     @Override
 	public void onCreate(final Bundle savedInstanceState) {
@@ -101,13 +101,13 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
 	}
 	
 	public void firstButtonClick(View v) {
-		Intent intent = detecter.getProximityIntent(1);
+		Intent intent = detecter.getFakeProximityIntent(1);
 		Log.d("Debug", "firstButtonClick " + intent);
 		sendBroadcast(intent);
 	}
 	
 	public void secondButtonClick(View v) {
-		Intent intent = detecter.getProximityIntent(2);
+		Intent intent = detecter.getFakeProximityIntent(2);
 		Log.d("Debug", "secondButtonClick " + intent);
 		sendBroadcast(intent);
 	}

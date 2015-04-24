@@ -29,7 +29,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class AGMapFragment extends SupportMapFragment implements IRecordSetter, IProximityDetecter {
+public class AGMapFragment extends SupportMapFragment implements IRecordSetter, IFakeProximityCreator {
 
 	private static final Class<AudioActivity> AUDIO_ACTIVITY_CLASS = AudioActivity.class;
 
@@ -162,7 +162,7 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	}
 	
 	@Override
-	public Intent getProximityIntent(int n) {
+	public Intent getFakeProximityIntent(int n) {
 		Intent intent;
 		if(n == 1) {
 			intent = getProximityIntent(firstRecord);
