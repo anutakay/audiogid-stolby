@@ -1,8 +1,10 @@
 package com.example.audiogid.notification;
 
+import com.example.audiogid.AudiogidApp;
 import com.example.audiogid.MainActivity;
 import com.example.audiogid.audio.AudioActivity;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -34,7 +36,9 @@ public class ProximityReceiver extends BroadcastReceiver {
 	}
 	
 	private void notifyInMap(final Context context, final String snippet) {
-		context.startActivity(this.createIntent(context, snippet));
+		Activity currentActivity = ((AudiogidApp)context.getApplicationContext()).getCurrentActivity();
+		currentActivity.startActivity(this.createIntent(currentActivity, snippet));
+		Log.d("Debug","Intent в Activity отправлен");
 	}
 	
 	private Intent createIntent(final Context context, final String snippet) {
@@ -43,6 +47,7 @@ public class ProximityReceiver extends BroadcastReceiver {
 	    return intent;
 	}
 	
+	@SuppressWarnings("unused")
 	private void createNotification(final Context context, final String title, final String audio) {
 		NotificationUtils n = NotificationUtils.getInstance(context);
 	    n.createProximityNotification(title, audio);

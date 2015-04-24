@@ -5,7 +5,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 
@@ -22,7 +21,7 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
 	private OnLocationChangedListener locationListener;
 	
     @Override
-    protected void onCreate(final Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
        
