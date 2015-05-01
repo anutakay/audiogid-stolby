@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ru.audiogid.krsk.stolby.audio.AudioActivity;
+import ru.audiogid.krsk.stolby.audio.IPlayer;
 import ru.audiogid.krsk.stolby.model.IRecordSetter;
 import ru.audiogid.krsk.stolby.model.Record;
 import ru.audiogid.krsk.stolby.notification.ProximityReceiver;
@@ -42,6 +43,12 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	public static final String PROXIMITY_DETECTED = "ru.audiogid.krsk.stolby.category.PROXIMITY";
 	 
 	private GPSTracker gps;
+	
+	private IPlayer player;
+	
+	public void setPlayer(IPlayer player){
+		this.player = player;
+	}
 	
 	//По id маркера можно получить запись, айди можно получить из маркера.
 	private Map<String, Record> recordMap = new HashMap<String, Record>();
@@ -98,7 +105,9 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 		 
 		@Override
 	    public void onInfoWindowClick(final Marker marker) {
-			showAudioActivity(marker.getId());
+			//showAudioActivity(marker.getId());
+			Record r = recordMap.get(marker.getId());
+			player.play(r.getAudio());
 	    }
 	};
 	    
