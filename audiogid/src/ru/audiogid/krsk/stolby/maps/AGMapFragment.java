@@ -23,6 +23,7 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -68,10 +69,21 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
     	getMap().getUiSettings().setZoomControlsEnabled(true);
     	getMap().setInfoWindowAdapter(infoWindowAdapter);
     	getMap().setOnInfoWindowClickListener(onInfoWindowClickListener);
+    	
+		getMap().setOnMapClickListener(onMapClickListener);
     	final DataBaseContentProvider provider = new DataBaseContentProvider(getActivity());
     	provider.setRecordSetter(this);
     	provider.getData();
 	}
+	
+	OnMapClickListener onMapClickListener = new OnMapClickListener() {
+
+		@Override
+		public void onMapClick(LatLng arg0) {
+			// TODO Auto-generated method stub
+			player.hideOverlay();
+		}
+	};
 	
 	private void showInfoWindow(final String snippet){
 		Marker marker = markerMap.get(snippet);

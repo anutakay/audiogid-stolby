@@ -115,4 +115,10 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void hideOverlay() {
+		// TODO Auto-generated method stub
+		mPlayer.hide();
+	}
 }

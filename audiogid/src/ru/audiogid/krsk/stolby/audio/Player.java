@@ -125,4 +125,11 @@ public void playAudio(String audioFile) {
 		mMediaPlayer.stop();
 		mMediaPlayer.release();
 	}
+	
+	public void hide() {
+		if(mMediaController != null) {
+			mMediaController.hide();
+		}
+		
+	}
 }
