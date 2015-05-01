@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import ru.audiogid.krsk.stolby.audio.AudioActivity;
 
-import com.example.audiogid.R;
+import ru.audiogid.krsk.stolby.R;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;

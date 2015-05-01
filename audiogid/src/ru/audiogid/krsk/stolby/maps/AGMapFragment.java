@@ -17,7 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.audiogid.R;
+import ru.audiogid.krsk.stolby.R;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
@@ -37,7 +37,7 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	
 	private static final double HOME_LAT = 55.975218;
 	
-	public static final String PROXIMITY_DETECTED = "com.example.audiogid.category.PROXIMITY";
+	public static final String PROXIMITY_DETECTED = "ru.audiogid.krsk.stolby.category.PROXIMITY";
 	 
 	private GPSTracker gps;
 	
