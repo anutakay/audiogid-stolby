@@ -7,6 +7,7 @@ import ru.audiogid.krsk.stolby.R.layout;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.RelativeLayout;
 
 public class AudioActivity extends Activity {
 	
@@ -25,7 +26,7 @@ public class AudioActivity extends Activity {
         }
         
         setContentView(R.layout.activity_audio);
-		mPlayer = new Player( this, findViewById(R.id.mainView));
+		mPlayer = new Player( this, (RelativeLayout)findViewById(R.id.mainView));
 		play(audio);
 	}
 	
