@@ -39,7 +39,7 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	
 	private static final double HOME_LAT = 55.975218;
 	
-	public static final String PROXIMITY_DETECTED = "com.example.audiogid.category.PROXIMITY";
+	public static final String PROXIMITY_DETECTED = "ru.audiogid.krsk.stolby.category.PROXIMITY";
 	 
 	private GPSTracker gps;
 	

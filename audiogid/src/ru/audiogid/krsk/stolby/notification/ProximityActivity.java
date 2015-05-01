@@ -1,6 +1,7 @@
 package ru.audiogid.krsk.stolby.notification;
 
 import ru.audiogid.krsk.stolby.R;
+
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.TextView;

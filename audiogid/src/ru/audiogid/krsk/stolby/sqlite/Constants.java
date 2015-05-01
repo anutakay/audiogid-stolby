@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 
 public class Constants {
 	
-	public static final String PACKAGE = "com.example.audiogid";
+	public static final String PACKAGE = "ru.audiogid.krsk.stolby";
 	
 	@SuppressLint("SdCardPath")
 	public static final String DB_PATH = "/data/data/" + PACKAGE + "/databases/";
