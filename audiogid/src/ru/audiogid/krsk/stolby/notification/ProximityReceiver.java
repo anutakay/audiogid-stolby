@@ -2,8 +2,6 @@ package ru.audiogid.krsk.stolby.notification;
 
 import ru.audiogid.krsk.stolby.AudiogidApp;
 import ru.audiogid.krsk.stolby.MainActivity;
-import ru.audiogid.krsk.stolby.audio.AudioActivity;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,6 +13,7 @@ public class ProximityReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(final Context context, final  Intent intent) {
+		Log.d("Debug", "onReceive " + intent);
 		final String key = LocationManager.KEY_PROXIMITY_ENTERING;
         final Boolean entering = intent.getBooleanExtra(key, false);
         final String title = intent.getExtras().getString("title");

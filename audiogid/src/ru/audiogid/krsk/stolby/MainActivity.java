@@ -1,8 +1,10 @@
 package ru.audiogid.krsk.stolby;
+import ru.audiogid.krsk.stolby.R;
 
 import ru.audiogid.krsk.stolby.audio.IPlayer;
 import ru.audiogid.krsk.stolby.audio.Player;
 import ru.audiogid.krsk.stolby.maps.AGMapFragment;
+import ru.audiogid.krsk.stolby.maps.IFakeProximityCreator;
 import ru.audiogid.krsk.stolby.maps.IProximityNotification;
 import android.content.Intent;
 import android.location.Criteria;
@@ -24,6 +26,7 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
 	private GoogleMap mMap;
 	private LocationManager locationManager;
 	private OnLocationChangedListener locationListener;
+	private IFakeProximityCreator detecter;
 	private IProximityNotification proximityNotification;
 	
 	private Player mPlayer;
@@ -38,6 +41,7 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
           finish();
           return;
         }
+        detecter = this.mapFragment;
         mapFragment.init();	
         setUpMapIfNeeded();
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -120,5 +124,17 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
 	public void hideOverlay() {
 		// TODO Auto-generated method stub
 		mPlayer.hide();
+	}
+	
+	public void firstButtonClick(View v) {
+		Intent intent = detecter.getFakeProximityIntent(1);
+		Log.d("Debug", "firstButtonClick " + intent);
+		sendBroadcast(intent);
+	}
+	
+	public void secondButtonClick(View v) {
+		Intent intent = detecter.getFakeProximityIntent(2);
+		Log.d("Debug", "secondButtonClick " + intent);
+		sendBroadcast(intent);
 	}
 }
