@@ -1,4 +1,4 @@
-package com.example.audiogid.notification;
+package ru.audiogid.krsk.stolby.notification;
 
 import com.example.audiogid.R;
 

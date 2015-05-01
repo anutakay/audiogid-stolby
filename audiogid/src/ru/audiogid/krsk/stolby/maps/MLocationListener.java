@@ -1,6 +1,7 @@
-package com.example.audiogid.maps;
+package ru.audiogid.krsk.stolby.maps;
 
-import com.example.audiogid.notification.NotificationUtils;
+import ru.audiogid.krsk.stolby.notification.NotificationUtils;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;

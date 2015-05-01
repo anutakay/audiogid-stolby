@@ -1,4 +1,4 @@
-package com.example.audiogid.maps;
+package ru.audiogid.krsk.stolby.maps;
 
 public interface IProximityNotification {
 	

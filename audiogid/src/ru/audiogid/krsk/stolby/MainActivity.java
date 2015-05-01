@@ -1,5 +1,7 @@
-package com.example.audiogid;
+package ru.audiogid.krsk.stolby;
 
+import ru.audiogid.krsk.stolby.maps.AGMapFragment;
+import ru.audiogid.krsk.stolby.maps.IProximityNotification;
 import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
@@ -9,8 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.example.audiogid.maps.AGMapFragment;
-import com.example.audiogid.maps.IProximityNotification;
+import com.example.audiogid.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;

@@ -1,9 +1,10 @@
-package com.example.audiogid.notification;
+package ru.audiogid.krsk.stolby.notification;
 
 import java.util.HashMap;
 
+import ru.audiogid.krsk.stolby.audio.AudioActivity;
+
 import com.example.audiogid.R;
-import com.example.audiogid.audio.AudioActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
