@@ -1,8 +1,6 @@
 package ru.audiogid.krsk.stolby.audio;
 
 import ru.audiogid.krsk.stolby.R;
-import ru.audiogid.krsk.stolby.R.id;
-import ru.audiogid.krsk.stolby.R.layout;
 
 import android.app.Activity;
 import android.content.Intent;

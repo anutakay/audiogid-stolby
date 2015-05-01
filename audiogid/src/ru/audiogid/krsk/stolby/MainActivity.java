@@ -1,5 +1,7 @@
 package ru.audiogid.krsk.stolby;
 
+import ru.audiogid.krsk.stolby.audio.IPlayer;
+import ru.audiogid.krsk.stolby.audio.Player;
 import ru.audiogid.krsk.stolby.maps.AGMapFragment;
 import ru.audiogid.krsk.stolby.maps.IProximityNotification;
 import android.content.Intent;
@@ -10,18 +12,21 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 
-public class MainActivity extends SavedFragmentActivity implements LocationSource, LocationListener {
+public class MainActivity extends SavedFragmentActivity implements LocationSource, LocationListener, IPlayer {
 	
 	private AGMapFragment mapFragment;
 	private GoogleMap mMap;
 	private LocationManager locationManager;
 	private OnLocationChangedListener locationListener;
 	private IProximityNotification proximityNotification;
+	
+	private Player mPlayer;
 	
     @Override
 	public void onCreate(final Bundle savedInstanceState) {
@@ -40,7 +45,15 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
         mMap.setLocationSource(this);
         
         proximityNotification = mapFragment;
+        
+        mPlayer = new Player( this, (RelativeLayout)findViewById(R.id.mainView));
+        mapFragment.setPlayer(this);
     }
+    
+    @Override
+    public void play(final String audio) {
+        mPlayer.playAudio(audio);
+	}
     
     private void setUpMapIfNeeded() {
         if (mMap == null) {
@@ -52,6 +65,7 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mPlayer.destroy();
     }
     
     protected void onNewIntent (final Intent intent) {
