@@ -1,4 +1,4 @@
-package com.example.audiogid.audio;
+package ru.audiogid.krsk.stolby.audio;
 
 import java.io.IOException;
 

@@ -1,7 +1,13 @@
-package com.example.audiogid.maps;
+package ru.audiogid.krsk.stolby.maps;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import ru.audiogid.krsk.stolby.audio.AudioActivity;
+import ru.audiogid.krsk.stolby.model.IRecordSetter;
+import ru.audiogid.krsk.stolby.model.Record;
+import ru.audiogid.krsk.stolby.notification.ProximityReceiver;
+import ru.audiogid.krsk.stolby.sqlite.DataBaseContentProvider;
 
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
@@ -12,11 +18,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.audiogid.R;
-import com.example.audiogid.audio.AudioActivity;
-import com.example.audiogid.model.IRecordSetter;
-import com.example.audiogid.model.Record;
-import com.example.audiogid.notification.ProximityReceiver;
-import com.example.audiogid.sqlite.DataBaseContentProvider;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;

@@ -1,4 +1,4 @@
-package com.example.audiogid.sqlite;
+package ru.audiogid.krsk.stolby.sqlite;
 
 import android.annotation.SuppressLint;
 

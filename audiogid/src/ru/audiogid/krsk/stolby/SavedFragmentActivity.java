@@ -1,4 +1,4 @@
-package com.example.audiogid;
+package ru.audiogid.krsk.stolby;
 
 import android.app.Activity;
 import android.os.Bundle;

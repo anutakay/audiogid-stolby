@@ -1,8 +1,8 @@
-package com.example.audiogid.notification;
+package ru.audiogid.krsk.stolby.notification;
 
-import com.example.audiogid.AudiogidApp;
-import com.example.audiogid.MainActivity;
-import com.example.audiogid.audio.AudioActivity;
+import ru.audiogid.krsk.stolby.AudiogidApp;
+import ru.audiogid.krsk.stolby.MainActivity;
+import ru.audiogid.krsk.stolby.audio.AudioActivity;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
