@@ -1,4 +1,4 @@
-package com.example.audiogid.model;
+package ru.audiogid.krsk.stolby.model;
 
 import java.io.Serializable;
 

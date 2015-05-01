@@ -1,9 +1,10 @@
-package com.example.audiogid.sqlite;
+package ru.audiogid.krsk.stolby.sqlite;
 
 import java.io.IOException;
 
-import com.example.audiogid.model.IRecordSetter;
-import com.example.audiogid.model.Record;
+import ru.audiogid.krsk.stolby.model.IRecordSetter;
+import ru.audiogid.krsk.stolby.model.Record;
+
 
 import android.app.Activity;
 import android.database.Cursor;

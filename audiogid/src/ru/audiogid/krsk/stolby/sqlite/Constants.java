@@ -1,4 +1,4 @@
-package com.example.audiogid.sqlite;
+package ru.audiogid.krsk.stolby.sqlite;
 
 import android.annotation.SuppressLint;
 
@@ -9,7 +9,7 @@ public class Constants {
 	@SuppressLint("SdCardPath")
 	public static final String DB_PATH = "/data/data/" + PACKAGE + "/databases/";
 	public static final String DB_NAME = "1"; 
-	public static final int DB_VERSION = 5;
+	public static final int DB_VERSION = 10;
 	public static final String RECORDS_TABLE = "stolby";
 	public static final String LON_COLUMN = "lg";
 	public static final String LAT_COLUMN = "lt";
