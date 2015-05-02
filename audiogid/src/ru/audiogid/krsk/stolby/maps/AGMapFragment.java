@@ -90,9 +90,10 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 		}
 	};
 	
-	private void showInfoWindow(final String snippet){
+	private Marker showInfoWindow(final String snippet){
 		Marker marker = markerMap.get(snippet);
 		marker.showInfoWindow();
+		return marker;
 	}
 	 
 	@SuppressLint("InflateParams")
@@ -117,11 +118,14 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 		 
 		@Override
 	    public void onInfoWindowClick(final Marker marker) {
-			//showAudioActivity(marker.getId());
-			Record r = recordMap.get(marker.getId());
-			player.play(r.getAudio());
+			playMarkerAudio(marker);
 	    }
 	};
+	
+	private void playMarkerAudio(final Marker marker) {
+		Record r = recordMap.get(marker.getId());
+		player.play(r.getAudio());
+	} 
 	    
 	private void showAudioActivity(final String id) {
 		
@@ -198,6 +202,7 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 
 	@Override
 	public void onProximity(String snippet) {
-		showInfoWindow(snippet);
+		Marker marker = showInfoWindow(snippet);
+		playMarkerAudio(marker);
 	}
 }
