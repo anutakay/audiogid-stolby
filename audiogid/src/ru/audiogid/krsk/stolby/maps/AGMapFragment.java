@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ru.audiogid.krsk.stolby.audio.AudioActivity;
+import ru.audiogid.krsk.stolby.audio.IPlayer;
 import ru.audiogid.krsk.stolby.model.IRecordSetter;
 import ru.audiogid.krsk.stolby.model.Record;
 import ru.audiogid.krsk.stolby.notification.ProximityReceiver;
@@ -22,6 +23,8 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -40,6 +43,14 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	public static final String PROXIMITY_DETECTED = "ru.audiogid.krsk.stolby.category.PROXIMITY";
 	 
 	private GPSTracker gps;
+	
+	private IPlayer player;
+	
+	public void setPlayer(IPlayer player){
+		this.player = player;
+	}
+	
+	public boolean activeModePreference = false;
 	
 	//По id маркера можно получить запись, айди можно получить из маркера.
 	private Map<String, Record> recordMap = new HashMap<String, Record>();
@@ -61,14 +72,26 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
     	getMap().getUiSettings().setZoomControlsEnabled(true);
     	getMap().setInfoWindowAdapter(infoWindowAdapter);
     	getMap().setOnInfoWindowClickListener(onInfoWindowClickListener);
+    	getMap().setOnMarkerClickListener(onMarkerClickListener);
+		getMap().setOnMapClickListener(onMapClickListener);
     	final DataBaseContentProvider provider = new DataBaseContentProvider(getActivity());
     	provider.setRecordSetter(this);
     	provider.getData();
 	}
 	
-	private void showInfoWindow(final String snippet){
+	OnMapClickListener onMapClickListener = new OnMapClickListener() {
+
+		@Override
+		public void onMapClick(LatLng arg0) {
+			// TODO Auto-generated method stub
+			player.hideOverlay();
+		}
+	};
+	
+	private Marker showInfoWindow(final String snippet){
 		Marker marker = markerMap.get(snippet);
 		marker.showInfoWindow();
+		return marker;
 	}
 	 
 	@SuppressLint("InflateParams")
@@ -88,14 +111,30 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	    	return null;
 	    }
 	};
+	
+	OnMarkerClickListener onMarkerClickListener = new OnMarkerClickListener() {
+
+		@Override
+		public boolean onMarkerClick(Marker marker) {
+			playMarkerAudio(marker, false);
+			return false;
+		}
+		
+	};
 	 
 	OnInfoWindowClickListener onInfoWindowClickListener = new OnInfoWindowClickListener() {
 		 
 		@Override
 	    public void onInfoWindowClick(final Marker marker) {
-			showAudioActivity(marker.getId());
+			Log.d("Debug", "onInfoWindowClick " + marker);
+			player.doPlayPause();
 	    }
 	};
+	
+	private void playMarkerAudio(final Marker marker, final boolean playNow) {
+		Record r = recordMap.get(marker.getId());
+		player.setAudio(r.getAudio(), playNow);
+	} 
 	    
 	private void showAudioActivity(final String id) {
 		
@@ -155,6 +194,7 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 
 	@Override
 	public void onProximity(String snippet) {
-		showInfoWindow(snippet);
+		Marker marker = showInfoWindow(snippet);
+		playMarkerAudio(marker, this.activeModePreference);
 	}
 }

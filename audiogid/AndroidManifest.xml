@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<<<<<<< HEAD
     package="com.example.audiogid"
     android:versionCode="5"
     android:versionName="1.1" >
+=======
+    package="ru.audiogid.krsk.stolby"
+    android:versionCode="10"
+    android:versionName="development" >
+>>>>>>> refs/heads/development
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -24,14 +30,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-       		android:name="ru.audiogid.krsk.stolby.audio.AudioActivity"
-            android:label="@string/app_name">
-        </activity>
-        <activity
-    		android:name="ru.audiogid.krsk.stolby.notification.ProximityActivity"
-            android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+
+        <activity 
+            android:name="ru.audiogid.krsk.stolby.PrefActivity">
         </activity>
         
         <receiver 

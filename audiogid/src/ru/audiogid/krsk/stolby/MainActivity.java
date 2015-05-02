@@ -1,15 +1,21 @@
 package ru.audiogid.krsk.stolby;
 
+import ru.audiogid.krsk.stolby.audio.Player;
 import ru.audiogid.krsk.stolby.maps.AGMapFragment;
 import ru.audiogid.krsk.stolby.maps.IProximityNotification;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.LocationSource;
@@ -22,6 +28,8 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
 	private LocationManager locationManager;
 	private OnLocationChangedListener locationListener;
 	private IProximityNotification proximityNotification;
+	
+	private Player mPlayer;
 	
     @Override
 	public void onCreate(final Bundle savedInstanceState) {
@@ -40,6 +48,9 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
         mMap.setLocationSource(this);
         
         proximityNotification = mapFragment;
+        
+        mPlayer = new Player( this, (RelativeLayout)findViewById(R.id.mainView));
+        mapFragment.setPlayer(mPlayer);
     }
     
     private void setUpMapIfNeeded() {
@@ -50,9 +61,22 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
     }
     
     @Override
+    protected void onStart() {
+    	super.onStart();
+    	this.getPrefs();
+    }
+    
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        mPlayer.destroy();
     }
+    
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuItem mi = menu.add(0, 1, 0, "Preferences");
+        mi.setIntent(new Intent(this, PrefActivity.class));
+        return super.onCreateOptionsMenu(menu);
+      }
     
     protected void onNewIntent (final Intent intent) {
     	final String snippet = intent.getExtras().getString("snippet");
@@ -101,4 +125,11 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
 		// TODO Auto-generated method stub
 		
 	}
+	
+	private void getPrefs() {
+        SharedPreferences prefs = PreferenceManager
+                        .getDefaultSharedPreferences(getBaseContext());
+        mapFragment.activeModePreference = prefs.getBoolean("active_mode", false);
+    }
+
 }
