@@ -29,7 +29,7 @@ public class AudioActivity extends Activity {
 	}
 	
 	private void play(final String audio) {
-        mPlayer.playAudio(audio);
+        mPlayer.setAudio(audio, true);
 	}
 	
 	@Override

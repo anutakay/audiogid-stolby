@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.MediaController.MediaPlayerControl;
 import android.widget.RelativeLayout;
 
-public class Player implements MediaPlayerControl {
+public class Player implements MediaPlayerControl, IPlayer{
 	
 	private MediaPlayer mMediaPlayer;
 	private MediaController mMediaController;
@@ -30,24 +30,40 @@ public class Player implements MediaPlayerControl {
 
 	private void setMediaPlayer(MediaPlayer mediaPlayer) {
 		mMediaPlayer = mediaPlayer;
-		
-		mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-            	mHandler.post(new Runnable() {
-            		public void run() {
-            			mMediaPlayer.start();
-            			mMediaController.show();
-            	 	}
-            	});
-            }
-        });
 	}
 	
-public void playAudio(String audioFile) {
+	OnPreparedListener onPreparedListenerPlayNow = new OnPreparedListener() {
+        @Override
+        public void onPrepared(MediaPlayer mp) {
+        	mHandler.post(new Runnable() {
+        		public void run() {
+        			mMediaPlayer.start();
+        			mMediaController.show();
+        	 	}
+        	});
+        }
+    };
+    
+    OnPreparedListener onPreparedListener = new OnPreparedListener() {
+        @Override
+        public void onPrepared(MediaPlayer mp) {
+        	mHandler.post(new Runnable() {
+        		public void run() {
+        			mMediaController.show();
+        	 	}
+        	});
+        }
+    };
+	
+    @Override
+    public void setAudio(String audioFile, boolean playNow) {
 		
 		mMediaPlayer.reset();
-		
+		if(playNow) {
+			mMediaPlayer.setOnPreparedListener(onPreparedListenerPlayNow);
+		} else {
+			mMediaPlayer.setOnPreparedListener(onPreparedListener);
+		}
 		AssetFileDescriptor afd;
         try {
 			afd = ((Context)mContext).getAssets().openFd(audioFile);
@@ -126,10 +142,18 @@ public void playAudio(String audioFile) {
 		mMediaPlayer.release();
 	}
 	
-	public void hide() {
+	@Override
+	public void hideOverlay() {
 		if(mMediaController != null) {
 			mMediaController.hide();
 		}
 		
+	}
+
+	@Override
+	public void doPlayPause() {
+		if(mMediaController != null) {
+			mMediaController.doPauseResume();
+		}
 	}
 }

@@ -24,6 +24,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -69,7 +70,7 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
     	getMap().getUiSettings().setZoomControlsEnabled(true);
     	getMap().setInfoWindowAdapter(infoWindowAdapter);
     	getMap().setOnInfoWindowClickListener(onInfoWindowClickListener);
-    	
+    	getMap().setOnMarkerClickListener(onMarkerClickListener);
 		getMap().setOnMapClickListener(onMapClickListener);
     	final DataBaseContentProvider provider = new DataBaseContentProvider(getActivity());
     	provider.setRecordSetter(this);
@@ -108,18 +109,29 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	    	return null;
 	    }
 	};
+	
+	OnMarkerClickListener onMarkerClickListener = new OnMarkerClickListener() {
+
+		@Override
+		public boolean onMarkerClick(Marker marker) {
+			playMarkerAudio(marker, false);
+			return false;
+		}
+		
+	};
 	 
 	OnInfoWindowClickListener onInfoWindowClickListener = new OnInfoWindowClickListener() {
 		 
 		@Override
 	    public void onInfoWindowClick(final Marker marker) {
-			playMarkerAudio(marker);
+			Log.d("Debug", "onInfoWindowClick " + marker);
+			player.doPlayPause();
 	    }
 	};
 	
-	private void playMarkerAudio(final Marker marker) {
+	private void playMarkerAudio(final Marker marker, final boolean playNow) {
 		Record r = recordMap.get(marker.getId());
-		player.play(r.getAudio());
+		player.setAudio(r.getAudio(), playNow);
 	} 
 	    
 	private void showAudioActivity(final String id) {
@@ -181,6 +193,6 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	@Override
 	public void onProximity(String snippet) {
 		Marker marker = showInfoWindow(snippet);
-		playMarkerAudio(marker);
+		playMarkerAudio(marker, true);
 	}
 }

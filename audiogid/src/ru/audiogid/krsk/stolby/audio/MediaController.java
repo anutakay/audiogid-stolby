@@ -171,7 +171,7 @@ public class MediaController extends FrameLayout {
 	        }
 	    };*/
 	    
-	    private void doPauseResume() {
+	    public void doPauseResume() {
 	        if (mPlayer == null) {
 	            return;
 	        }

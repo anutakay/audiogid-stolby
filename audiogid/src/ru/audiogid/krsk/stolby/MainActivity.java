@@ -1,6 +1,5 @@
 package ru.audiogid.krsk.stolby;
 
-import ru.audiogid.krsk.stolby.audio.IPlayer;
 import ru.audiogid.krsk.stolby.audio.Player;
 import ru.audiogid.krsk.stolby.maps.AGMapFragment;
 import ru.audiogid.krsk.stolby.maps.IProximityNotification;
@@ -18,7 +17,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 
-public class MainActivity extends SavedFragmentActivity implements LocationSource, LocationListener, IPlayer {
+public class MainActivity extends SavedFragmentActivity implements LocationSource, LocationListener {
 	
 	private AGMapFragment mapFragment;
 	private GoogleMap mMap;
@@ -47,13 +46,8 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
         proximityNotification = mapFragment;
         
         mPlayer = new Player( this, (RelativeLayout)findViewById(R.id.mainView));
-        mapFragment.setPlayer(this);
+        mapFragment.setPlayer(mPlayer);
     }
-    
-    @Override
-    public void play(final String audio) {
-        mPlayer.playAudio(audio);
-	}
     
     private void setUpMapIfNeeded() {
         if (mMap == null) {
@@ -116,9 +110,4 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
 		
 	}
 
-	@Override
-	public void hideOverlay() {
-		// TODO Auto-generated method stub
-		mPlayer.hide();
-	}
 }
