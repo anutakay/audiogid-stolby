@@ -50,6 +50,8 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 		this.player = player;
 	}
 	
+	public boolean activeModePreference = false;
+	
 	//По id маркера можно получить запись, айди можно получить из маркера.
 	private Map<String, Record> recordMap = new HashMap<String, Record>();
 	
@@ -193,6 +195,6 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	@Override
 	public void onProximity(String snippet) {
 		Marker marker = showInfoWindow(snippet);
-		playMarkerAudio(marker, true);
+		playMarkerAudio(marker, this.activeModePreference);
 	}
 }

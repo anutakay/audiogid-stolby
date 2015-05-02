@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+ 	xmlns:android="http://schemas.android.com/apk/res/android">
+	<CheckBoxPreference
+ 		android:key="active_mode"
+ 		android:summaryOff="Вкючен пассивный режим"
+ 		android:summaryOn="Включен активный режим"
+ 		android:title="Активный режим">
+	</CheckBoxPreference>
+</PreferenceScreen>
