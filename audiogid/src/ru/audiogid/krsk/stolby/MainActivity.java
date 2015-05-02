@@ -6,12 +6,16 @@ import ru.audiogid.krsk.stolby.maps.AGMapFragment;
 import ru.audiogid.krsk.stolby.maps.IFakeProximityCreator;
 import ru.audiogid.krsk.stolby.maps.IProximityNotification;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -61,10 +65,22 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
     }
     
     @Override
+    protected void onStart() {
+    	super.onStart();
+    	this.getPrefs();
+    }
+    
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mPlayer.destroy();
     }
+    
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuItem mi = menu.add(0, 1, 0, "Preferences");
+        mi.setIntent(new Intent(this, PrefActivity.class));
+        return super.onCreateOptionsMenu(menu);
+      }
     
     protected void onNewIntent (final Intent intent) {
     	final String snippet = intent.getExtras().getString("snippet");
@@ -125,5 +141,11 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
 		Log.d("Debug", "secondButtonClick " + intent);
 		sendBroadcast(intent);
 	}
-}
 
+	private void getPrefs() {
+        SharedPreferences prefs = PreferenceManager
+                        .getDefaultSharedPreferences(getBaseContext());
+        mapFragment.activeModePreference = prefs.getBoolean("active_mode", false);
+    }
+
+}
