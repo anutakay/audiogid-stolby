@@ -158,7 +158,9 @@ public class Player implements MediaPlayerControl, IPlayer{
 		if(mMediaController != null) {
 			mMediaController.hide();
 		}
-		
+		if(this != null && this.isPlaying()) {
+			this.pause();
+		}
 	}
 
 	@Override
