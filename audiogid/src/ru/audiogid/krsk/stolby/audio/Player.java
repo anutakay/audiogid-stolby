@@ -5,6 +5,7 @@ import java.io.IOException;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Handler;
 import android.util.Log;
@@ -54,6 +55,15 @@ public class Player implements MediaPlayerControl, IPlayer{
         	});
         }
     };
+    
+    OnCompletionListener onCompletionListener = new OnCompletionListener() {
+
+		@Override
+		public void onCompletion(MediaPlayer mp) {
+			mMediaController.freezeButton();
+		}
+    	
+    };
 	
     @Override
     public void setAudio(String audioFile, boolean playNow) {
@@ -64,6 +74,7 @@ public class Player implements MediaPlayerControl, IPlayer{
 		} else {
 			mMediaPlayer.setOnPreparedListener(onPreparedListener);
 		}
+		mMediaPlayer.setOnCompletionListener(onCompletionListener);
 		AssetFileDescriptor afd;
         try {
 			afd = ((Context)mContext).getAssets().openFd(audioFile);
