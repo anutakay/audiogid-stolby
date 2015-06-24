@@ -4,19 +4,26 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.media.AudioManager.OnAudioFocusChangeListener;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 import android.widget.MediaController.MediaPlayerControl;
 import android.widget.RelativeLayout;
 
-public class Player implements MediaPlayerControl, IPlayer{
+public class Player implements MediaPlayerControl, IPlayer, OnAudioFocusChangeListener {
+	
+	private Context mContext;
 	
 	private MediaPlayer mMediaPlayer;
+	
 	private MediaController mMediaController;
-	private Context mContext;
+	
+	private AudioManager mAudioManager;
+	
     private Handler mHandler = new Handler();
 	
 	public Player(Context context, RelativeLayout anchorView) {
@@ -25,6 +32,7 @@ public class Player implements MediaPlayerControl, IPlayer{
 		mMediaController.setMediaPlayer(this);
 		mMediaController.setAnchorView(anchorView);
 		setMediaPlayer(new MediaPlayer());
+		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         
 	}
 
@@ -37,7 +45,7 @@ public class Player implements MediaPlayerControl, IPlayer{
         public void onPrepared(MediaPlayer mp) {
         	mHandler.post(new Runnable() {
         		public void run() {
-        			mMediaPlayer.start();
+        			start();
         			mMediaController.show();
         	 	}
         	});
@@ -54,6 +62,16 @@ public class Player implements MediaPlayerControl, IPlayer{
         	});
         }
     };
+    
+    OnCompletionListener onCompletionListener = new OnCompletionListener() {
+
+		@Override
+		public void onCompletion(MediaPlayer mp) {
+			mAudioManager.abandonAudioFocus(Player.this);
+			mMediaController.freezeButton();
+		}
+    	
+    };
 	
     @Override
     public void setAudio(String audioFile, boolean playNow) {
@@ -64,6 +82,7 @@ public class Player implements MediaPlayerControl, IPlayer{
 		} else {
 			mMediaPlayer.setOnPreparedListener(onPreparedListener);
 		}
+		mMediaPlayer.setOnCompletionListener(onCompletionListener);
 		AssetFileDescriptor afd;
         try {
 			afd = ((Context)mContext).getAssets().openFd(audioFile);
@@ -77,11 +96,18 @@ public class Player implements MediaPlayerControl, IPlayer{
 	
 	@Override
 	public void start() {
-		mMediaPlayer.start();
+		int requestResult = mAudioManager.requestAudioFocus(this,
+		        AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+		if(requestResult == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+			mMediaPlayer.start();
+		} else {
+			Log.d("Debug", "Невозможно получить фокус ");
+		}
 	}
 
 	@Override
 	public void pause() {
+		mAudioManager.abandonAudioFocus(this);
 		mMediaPlayer.pause();
 	}
 
@@ -137,7 +163,8 @@ public class Player implements MediaPlayerControl, IPlayer{
 		return false;
 	}
 	
-	public void destroy(){
+	public void destroy() {
+		mAudioManager.abandonAudioFocus(this);
 		mMediaPlayer.stop();
 		mMediaPlayer.release();
 	}
@@ -147,7 +174,9 @@ public class Player implements MediaPlayerControl, IPlayer{
 		if(mMediaController != null) {
 			mMediaController.hide();
 		}
-		
+		if(this != null && this.isPlaying()) {
+			this.pause();
+		}
 	}
 
 	@Override
@@ -155,5 +184,11 @@ public class Player implements MediaPlayerControl, IPlayer{
 		if(mMediaController != null) {
 			mMediaController.doPauseResume();
 		}
+	}
+
+	@Override
+	public void onAudioFocusChange(int focusChange) {
+		// TODO Auto-generated method stub
+		Log.d("Debug", "Аудио фокус сменился");
 	}
 }

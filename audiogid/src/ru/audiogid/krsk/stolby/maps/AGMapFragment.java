@@ -133,7 +133,12 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	
 	private void playMarkerAudio(final Marker marker, final boolean playNow) {
 		Record r = recordMap.get(marker.getId());
-		player.setAudio(r.getAudio(), playNow);
+		if(r.getAudio() == null) {
+			Log.i("Debug", "Нет записи " + r.getTitle());
+		} else {
+			player.setAudio(r.getAudio(), playNow);
+		}
+		
 	} 
 	    
 	private void showAudioActivity(final String id) {
@@ -158,9 +163,10 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	
 	@Override
 	public void setRecord(final Record record) {
-		if(record.getAudio() == null) {
+		//Log.d("Debug", "filename " + record.getAudio());
+		/*if(record.getAudio() == null) {
 			return;
-		}
+		}*/
 		Marker m = getMap().addMarker(new MarkerOptions().position(
 				new LatLng(record.getLat(), record.getLon()))
     	        .title(record.getTitle())

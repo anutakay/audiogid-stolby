@@ -142,6 +142,7 @@ public class MediaController extends FrameLayout {
 	        public void onClick(View v) {
 	        	mPlayer.seekTo(0);
 	        	mPlayer.start();
+	        	mPauseButton.setEnabled(true);
 	        	updatePausePlay();
 	        }
 	    };
@@ -181,6 +182,7 @@ public class MediaController extends FrameLayout {
 	        } else {
 	            mPlayer.start();
 	        }
+	        mPauseButton.setEnabled(true);
 	        updatePausePlay();
 	    }
 	    
@@ -212,6 +214,10 @@ public class MediaController extends FrameLayout {
 	        } else {
 	            mPauseButton.setImageResource(R.drawable.ic_media_play);
 	        }
+	    }
+	    
+	    public void freezeButton() {
+	    	mPauseButton.setEnabled(false);
 	    }
 	    
 }
