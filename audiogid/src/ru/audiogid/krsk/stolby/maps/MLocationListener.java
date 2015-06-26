@@ -15,7 +15,9 @@ import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 
-public class MLocationListener implements LocationListener {
+public class MLocationListener implements LocationListener, ILocationModeSwitch {
+	
+	private boolean mLocationModeOn = true;
 	
 	private Context mContext;
 	
@@ -32,7 +34,9 @@ public class MLocationListener implements LocationListener {
 		Log.d("Debug", "Теперь мы в точке " + location);
 		//addMarker(location);
 		//createNotification();
-		moveCameraToCurrentLocation(location);
+		if(mLocationModeOn) {
+			moveCameraToCurrentLocation(location);
+		}
 	}
 	
 	private void moveCameraToCurrentLocation(Location location) {
@@ -75,5 +79,20 @@ public class MLocationListener implements LocationListener {
 			NotificationUtils n = NotificationUtils.getInstance(mContext);
 		    n.createInfoNotification("prox notification");
 		}
+
+	@Override
+	public void locationModeOn() {
+		mLocationModeOn = true;
+	}
+
+	@Override
+	public void locationModeOff() {
+		mLocationModeOn = false;
+	}
+
+	@Override
+	public boolean isLocationModeOn() {
+		return mLocationModeOn;
+	}
 
 }

@@ -66,10 +66,14 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	private Map<String, Marker> markerMap = new HashMap<String, Marker>();
 	 
 	@SuppressWarnings("unused")
-	private Marker currentMarker;	 
+	private Marker currentMarker;	
 	
-	public void init(){
-		gps = new GPSTracker(getActivity(), (LocationListener) new MLocationListener(getActivity().getApplicationContext(), getMap()));
+	private MLocationListener mLocationListener;
+	
+	public void init() {
+		mLocationListener = new MLocationListener(getActivity().getApplicationContext(), getMap());
+		mLocationListener.locationModeOff();
+		gps = new GPSTracker(getActivity(), mLocationListener);
     	if(gps.canGetLocation()) {
     		Log.d("debug", "Можно определить координаты " + gps.getLatitude() + " " + gps.getLongitude());
     	} else {
