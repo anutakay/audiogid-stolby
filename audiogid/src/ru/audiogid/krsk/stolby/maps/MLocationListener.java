@@ -39,7 +39,7 @@ public class MLocationListener implements LocationListener, ILocationModeSwitch 
 		}
 	}
 	
-	private void moveCameraToCurrentLocation(Location location) {
+	public void moveCameraToCurrentLocation(Location location) {
 		final CameraPosition cameraPosition = new CameraPosition.Builder()
         .target(new LatLng(location.getLatitude(), location.getLongitude()))
         .zoom(map.getCameraPosition().zoom)

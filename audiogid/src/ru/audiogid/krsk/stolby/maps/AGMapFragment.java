@@ -283,6 +283,7 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	@Override
 	public void locationModeOn() {
 		mLocationListener.locationModeOn();
+		mLocationListener.moveCameraToCurrentLocation(gps.getLocation());
 	}
 
 	@Override
