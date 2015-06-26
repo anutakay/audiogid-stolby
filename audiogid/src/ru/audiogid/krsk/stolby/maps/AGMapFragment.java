@@ -12,16 +12,23 @@ import ru.audiogid.krsk.stolby.sqlite.DataBaseContentProvider;
 
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.location.LocationListener;
+import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import ru.audiogid.krsk.stolby.R;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
+import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
@@ -74,6 +81,7 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
     	getMap().setOnInfoWindowClickListener(onInfoWindowClickListener);
     	getMap().setOnMarkerClickListener(onMarkerClickListener);
 		getMap().setOnMapClickListener(onMapClickListener);
+		getMap().setOnCameraChangeListener(mOnCameraChangeListener);
     	final DataBaseContentProvider provider = new DataBaseContentProvider(getActivity());
     	provider.setRecordSetter(this);
     	provider.getData();
@@ -203,4 +211,56 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 		Marker marker = showInfoWindow(snippet);
 		playMarkerAudio(marker, this.activeModePreference);
 	}
+	
+	private boolean mMapIsMoved = false;
+	View mOriginalContentView;
+	
+	private class TouchableWrapper extends FrameLayout {
+	    public TouchableWrapper(Context context) {
+			super(context);
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+	    public boolean dispatchTouchEvent(MotionEvent ev) {
+	    switch (ev.getAction()) {
+	    case MotionEvent.ACTION_DOWN:
+	        break;
+
+	    case MotionEvent.ACTION_UP:
+	        break;
+	        
+	    case MotionEvent.ACTION_MOVE:
+	    	mMapIsMoved = true;
+	        break;
+	    }
+
+	        return super.dispatchTouchEvent(ev);
+	    }
+	}
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+	    mOriginalContentView = super.onCreateView(inflater, parent, savedInstanceState);
+
+	    TouchableWrapper mTouchView = new TouchableWrapper(getActivity());
+	    mTouchView.addView(mOriginalContentView);
+
+	    return mTouchView;
+	}
+
+	@Override
+	public View getView() {
+	    return mOriginalContentView;
+	}
+	
+	private final OnCameraChangeListener mOnCameraChangeListener = new OnCameraChangeListener() {
+	    @Override
+	    public void onCameraChange(CameraPosition cameraPosition) {
+	        if (mMapIsMoved) {
+	           Log.d("Debug", "Камеру переместили прикосновением");
+	           mMapIsMoved = false;
+	        }
+	    }
+	};
 }
