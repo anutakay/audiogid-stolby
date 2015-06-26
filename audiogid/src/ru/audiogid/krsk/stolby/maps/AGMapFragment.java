@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import ru.audiogid.krsk.stolby.R;
 import com.google.android.gms.maps.CameraUpdate;
@@ -53,6 +54,8 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	
 	private IPlayer player;
 	
+	public ToggleButton mToggleButton; 
+	
 	public void setPlayer(IPlayer player){
 		this.player = player;
 	}
@@ -72,7 +75,7 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	
 	public void init() {
 		mLocationListener = new MLocationListener(getActivity().getApplicationContext(), getMap());
-		mLocationListener.locationModeOff();
+		setLocationMode(true);
 		gps = new GPSTracker(getActivity(), mLocationListener);
     	if(gps.canGetLocation()) {
     		Log.d("debug", "Можно определить координаты " + gps.getLatitude() + " " + gps.getLongitude());
@@ -89,6 +92,15 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
     	final DataBaseContentProvider provider = new DataBaseContentProvider(getActivity());
     	provider.setRecordSetter(this);
     	provider.getData();
+	}
+
+	private void setLocationMode(boolean mode) {
+		if(mode == false) {
+			mLocationListener.locationModeOff();
+		} else {
+			mLocationListener.locationModeOn();
+		}
+		mToggleButton.setChecked(mode);
 	}
 	
 	OnMapClickListener onMapClickListener = new OnMapClickListener() {
@@ -262,8 +274,8 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	    @Override
 	    public void onCameraChange(CameraPosition cameraPosition) {
 	        if (mMapIsMoved) {
-	           Log.d("Debug", "Камеру переместили прикосновением");
-	           mMapIsMoved = false;
+	        	setLocationMode(false);
+	        	mMapIsMoved = false;
 	        }
 	    }
 	};

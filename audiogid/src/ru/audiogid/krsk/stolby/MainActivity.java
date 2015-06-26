@@ -42,6 +42,7 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
           finish();
           return;
         }
+        mapFragment.mToggleButton = (ToggleButton)this.findViewById(R.id.toggleButton1);
         mapFragment.init();	
         setUpMapIfNeeded();
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -52,7 +53,7 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
         
         mPlayer = new Player( this, (RelativeLayout)findViewById(R.id.mainView));
         mapFragment.setPlayer(mPlayer);
-    }
+          }
     
     private void setUpMapIfNeeded() {
         if (mMap == null) {
