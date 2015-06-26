@@ -2,7 +2,10 @@ package ru.audiogid.krsk.stolby.maps;
 
 import ru.audiogid.krsk.stolby.notification.NotificationUtils;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -29,6 +32,17 @@ public class MLocationListener implements LocationListener {
 		Log.d("Debug", "Теперь мы в точке " + location);
 		//addMarker(location);
 		//createNotification();
+		moveCameraToCurrentLocation(location);
+	}
+	
+	private void moveCameraToCurrentLocation(Location location) {
+		final CameraPosition cameraPosition = new CameraPosition.Builder()
+        .target(new LatLng(location.getLatitude(), location.getLongitude()))
+        .zoom(map.getCameraPosition().zoom)
+        .build();
+    	
+    	final CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+    	map.moveCamera(cameraUpdate);
 	}
 	
 	private void addMarker(final Location location) {
