@@ -39,7 +39,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class AGMapFragment extends SupportMapFragment implements IRecordSetter, IProximityNotification {
+public class AGMapFragment extends SupportMapFragment implements IRecordSetter, IProximityNotification, ILocationModeSwitch {
 
 	private static final Class<AudioActivity> AUDIO_ACTIVITY_CLASS = AudioActivity.class;
 
@@ -267,4 +267,19 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	        }
 	    }
 	};
+
+	@Override
+	public void locationModeOn() {
+		mLocationListener.locationModeOn();
+	}
+
+	@Override
+	public void locationModeOff() {
+		mLocationListener.locationModeOff();
+	}
+
+	@Override
+	public boolean isLocationModeOn() {
+		return mLocationListener.isLocationModeOn();
+	}
 }

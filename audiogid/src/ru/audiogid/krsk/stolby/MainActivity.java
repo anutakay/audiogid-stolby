@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.LocationSource;
@@ -83,8 +84,17 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
     	this.proximityNotification.onProximity(snippet);
     }
     
-    public void onClick(final View b){
-    	mapFragment.toHomeLocation();
+    public void onClick(final View v){
+    	if(v.getId() == R.id.button1) {
+    		mapFragment.toHomeLocation();
+    	} else if(v.getId() == R.id.toggleButton1) {
+    		ToggleButton tb = (ToggleButton)v;
+    		if(tb.isChecked()) {
+    			mapFragment.locationModeOn();
+    		} else {
+    			mapFragment.locationModeOff();
+    		}
+    	}
     }
 
 	@Override
