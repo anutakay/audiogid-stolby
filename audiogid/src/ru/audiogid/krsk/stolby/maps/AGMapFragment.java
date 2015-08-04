@@ -36,6 +36,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -79,7 +80,7 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
     	} else {
     		Log.d("debug", "Нельзя определить координаты");
     	}
-    	toHomeLocation();
+    	goToHomeLocation();
     	getMap().getUiSettings().setZoomControlsEnabled(true);
     	getMap().setInfoWindowAdapter(infoWindowAdapter);
     	getMap().setOnInfoWindowClickListener(onInfoWindowClickListener);
@@ -163,7 +164,7 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	    startActivity(intent);
 	}
 
-	public void toHomeLocation() {
+	public void goToHomeLocation() {
 		final CameraPosition cameraPosition = new CameraPosition.Builder()
         .target(new LatLng(HOME_LAT, HOME_LON))
         .zoom(12)
@@ -262,8 +263,10 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	    @Override
 	    public void onCameraChange(CameraPosition cameraPosition) {
 	        if (mMapIsMoved) {
-	           Log.d("Debug", "Камеру переместили прикосновением");
-	           mMapIsMoved = false;
+	        	LatLngBounds bounds = getMap().getProjection().getVisibleRegion().latLngBounds;
+	        	
+	        	Log.d("Debug", "Камеру переместили прикосновением " + bounds);
+	        	mMapIsMoved = false; 
 	        }
 	    }
 	};

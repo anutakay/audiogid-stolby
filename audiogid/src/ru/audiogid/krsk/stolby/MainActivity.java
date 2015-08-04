@@ -84,7 +84,7 @@ public class MainActivity extends SavedFragmentActivity implements LocationSourc
     }
     
     public void onClick(final View b){
-    	mapFragment.toHomeLocation();
+    	mapFragment.goToHomeLocation();
     }
 
 	@Override
