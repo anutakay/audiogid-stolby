@@ -185,7 +185,7 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 		/*if(record.getAudio() == null) {
 			return;
 		}*/
-		/*Marker m = getMap().addMarker(new MarkerOptions().position(
+		Marker m = getMap().addMarker(new MarkerOptions().position(
 				new LatLng(record.getLat(), record.getLon()))
     	        .title(record.getTitle())
     	        .snippet(record.getSnippet()));
@@ -197,7 +197,7 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
     						.strokeWidth(2));
     	recordMap.put(m.getId(), record);
     	markerMap.put(m.getSnippet(), m);
-    	setProximityAlert(record);*/
+    	setProximityAlert(record);
 	}
 	
 	@Override
