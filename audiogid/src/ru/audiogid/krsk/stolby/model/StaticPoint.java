@@ -30,7 +30,7 @@ public class StaticPoint implements Serializable {
 	
 	
 	public String getSnippet() {
-		return getTitle() + getLat() + getLon();
+		return "sp" + getTitle() + getLat() + getLon();
 	}
 	
 
