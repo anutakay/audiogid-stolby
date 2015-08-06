@@ -9,7 +9,7 @@ public class Record extends StaticPoint implements Serializable {
 	private String audio;
 	
 	public Record(final double lon, final double lat, final int radius, final String title, final String audio) {
-		super(lon, lat, radius , title);
+		super(lon, lat, title);
 		this.radius = radius;
 		this.audio = audio;
 	}

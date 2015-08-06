@@ -11,6 +11,7 @@ public class Constants {
 	public static final String DB_NAME = "1"; 
 	public static final int DB_VERSION = 12;
 	public static final String RECORDS_TABLE = "stolby";
+	public static final String STATIC_OBJECTS_TABLE = "statobj";
 	public static final String LON_COLUMN = "lg";
 	public static final String LAT_COLUMN = "lt";
 	public static final String AUDIO_FILENAME_COLUMN = "audio";

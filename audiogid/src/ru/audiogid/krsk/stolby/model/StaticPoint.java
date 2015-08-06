@@ -10,7 +10,7 @@ public class StaticPoint implements Serializable {
 	
 	private String title;
 	
-	public StaticPoint(final double lon, final double lat, final int radius, final String title) {
+	public StaticPoint(final double lon, final double lat, final String title) {
 		this.lon = lon;
 		this.lat = lat;
 		this.title = title;
