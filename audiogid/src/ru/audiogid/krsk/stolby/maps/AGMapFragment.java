@@ -7,6 +7,7 @@ import ru.audiogid.krsk.stolby.audio.AudioActivity;
 import ru.audiogid.krsk.stolby.audio.IPlayer;
 import ru.audiogid.krsk.stolby.model.IRecordSetter;
 import ru.audiogid.krsk.stolby.model.Record;
+import ru.audiogid.krsk.stolby.model.StaticPoint;
 import ru.audiogid.krsk.stolby.notification.ProximityReceiver;
 import ru.audiogid.krsk.stolby.sqlite.DataBaseContentProvider;
 
@@ -192,6 +193,12 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
     	recordMap.put(m.getId(), record);
     	markerMap.put(m.getSnippet(), m);
     	setProximityAlert(record);
+	}
+	
+	@Override
+	public void setStaticPoint(StaticPoint point) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void setProximityAlert(final Record record) {
