@@ -34,6 +34,7 @@ import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -176,11 +177,10 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	
 	@Override
 	public void setRecord(final Record record) {
-		//Log.d("Debug", "filename " + record.getAudio());
 		/*if(record.getAudio() == null) {
 			return;
 		}*/
-		Marker m = getMap().addMarker(new MarkerOptions().position(
+		/*Marker m = getMap().addMarker(new MarkerOptions().position(
 				new LatLng(record.getLat(), record.getLon()))
     	        .title(record.getTitle())
     	        .snippet(record.getSnippet()));
@@ -192,13 +192,16 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
     						.strokeWidth(2));
     	recordMap.put(m.getId(), record);
     	markerMap.put(m.getSnippet(), m);
-    	setProximityAlert(record);
+    	setProximityAlert(record);*/
 	}
 	
 	@Override
 	public void setStaticPoint(StaticPoint point) {
-		// TODO Auto-generated method stub
-		
+		Marker m = getMap().addMarker(new MarkerOptions().position(
+				new LatLng(point.getLat(), point.getLon()))
+    	        .title(point.getTitle())
+    	        .snippet(point.getSnippet())
+    	        .icon(BitmapDescriptorFactory.fromResource(R.drawable.mount)));
 	}
 
 	private void setProximityAlert(final Record record) {
