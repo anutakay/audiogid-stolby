@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import ru.audiogid.krsk.stolby.model.IRecordSetter;
 import ru.audiogid.krsk.stolby.model.Record;
+import ru.audiogid.krsk.stolby.model.StaticPoint;
 
 
 import android.app.Activity;
@@ -36,9 +37,26 @@ public class DataBaseContentProvider{
 		this.recordSetter = recordSetter;
 	}
     
-    public final void getData(){
+    public final void getData() {
     	SQLiteDatabase db = dbHelper.getReadableDatabase();
-    	Cursor c = db.query(Constants.RECORDS_TABLE, null, null, null, null, null, null);
+    	Cursor c = db.query(Constants.STATIC_OBJECTS_TABLE, null, null, null, null, null, null);
+  	  if (c.moveToFirst()) {
+		  int longColIndex = c.getColumnIndex(Constants.LON_COLUMN);
+		  int latColIndex = c.getColumnIndex(Constants.LAT_COLUMN);
+		  int titleColIndex = c.getColumnIndex(Constants.TITLE_COLUMN);
+		  do {
+			  if(recordSetter == null) { break; }
+			  StaticPoint sp = new StaticPoint(c.getDouble(longColIndex),
+					  				c.getDouble(latColIndex),  
+					  				c.getString(titleColIndex));
+			  recordSetter.setStaticPoint(sp);
+		  } while(c.moveToNext());
+	  }else{
+		  Log.d(LOG_TAG, "Empty records table");
+	  }
+	  c.close(); 
+    	
+    	c = db.query(Constants.RECORDS_TABLE, null, null, null, null, null, null);
     	  if (c.moveToFirst()) {
     		  int longColIndex = c.getColumnIndex(Constants.LON_COLUMN);
     		  int latColIndex = c.getColumnIndex(Constants.LAT_COLUMN);
@@ -53,6 +71,23 @@ public class DataBaseContentProvider{
     					  				c.getString(titleColIndex), 
     					  				c.getString(audioColIndex));
     			  recordSetter.setRecord(r);
+    		  } while(c.moveToNext());
+    	  }else{
+    		  Log.d(LOG_TAG, "Empty records table");
+    	  }
+    	  c.close();
+    	  
+    	  c = db.query(Constants.STATIC_OBJECTS_TABLE, null, null, null, null, null, null);
+    	  if (c.moveToFirst()) {
+    		  int longColIndex = c.getColumnIndex(Constants.LON_COLUMN);
+    		  int latColIndex = c.getColumnIndex(Constants.LAT_COLUMN);
+    		  int titleColIndex = c.getColumnIndex(Constants.TITLE_COLUMN);
+    		  do {
+    			  if(recordSetter == null) { break; }
+    			  StaticPoint sp = new StaticPoint(c.getDouble(longColIndex),
+    					  				c.getDouble(latColIndex),  
+    					  				c.getString(titleColIndex));
+    			  recordSetter.setStaticPoint(sp);
     		  } while(c.moveToNext());
     	  }else{
     		  Log.d(LOG_TAG, "Empty records table");
