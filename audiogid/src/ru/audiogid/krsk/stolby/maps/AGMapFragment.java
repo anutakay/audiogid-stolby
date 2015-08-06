@@ -130,8 +130,13 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 
 		@Override
 		public boolean onMarkerClick(Marker marker) {
-			playMarkerAudio(marker, false);
-			return false;
+			if(markerMap.containsValue(marker)) {
+				playMarkerAudio(marker, false);
+				return false;
+			} else {
+				return false;
+			}
+			
 		}
 		
 	};
