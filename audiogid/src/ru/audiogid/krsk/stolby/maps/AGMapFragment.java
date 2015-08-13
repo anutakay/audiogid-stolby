@@ -40,7 +40,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class AGMapFragment extends SupportMapFragment implements 
+public class AGMapFragment extends SupportMapFragment implements
         IAGMapFragment, IProximityNotification, IRecordSetter {
 
     public static final String PROXIMITY_DETECTED = "ru.audiogid.krsk.stolby.category.PROXIMITY";
@@ -48,7 +48,7 @@ public class AGMapFragment extends SupportMapFragment implements
     private GPSTracker mGPS;
 
     private IPlayer mPlayer;
-    
+
     private boolean mMapIsMoved = false;
 
     public boolean activeModePreference = false;
@@ -60,9 +60,9 @@ public class AGMapFragment extends SupportMapFragment implements
     private Map<String, Marker> markerMap = new HashMap<String, Marker>();
 
     private MLocationListener mLocationListener;
-    
+
     private View mOriginalContentView;
-  
+
     @Override
     public void init() {
         mLocationListener = new MLocationListener(getActivity()
@@ -87,34 +87,35 @@ public class AGMapFragment extends SupportMapFragment implements
         provider.setRecordSetter(this);
         provider.getData();
     }
-    
+
     @Override
     public void toHomeLocation() {
         final CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(Constants.HOME_LAT, Constants.HOME_LON)).zoom(12).build();
+                .target(new LatLng(Constants.HOME_LAT, Constants.HOME_LON))
+                .zoom(12).build();
 
         final CameraUpdate cameraUpdate = CameraUpdateFactory
                 .newCameraPosition(cameraPosition);
         getMap().moveCamera(cameraUpdate);
     }
-    
+
     @Override
-    public void setPlayer(IPlayer player) {
+    public void setPlayer(final IPlayer player) {
         this.mPlayer = player;
     }
 
     private OnMapClickListener onMapClickListener = new OnMapClickListener() {
 
         @Override
-        public void onMapClick(LatLng arg0) {
+        public void onMapClick(final LatLng arg0) {
             mPlayer.hideOverlay();
         }
     };
-    
+
     private OnMarkerClickListener onMarkerClickListener = new OnMarkerClickListener() {
 
         @Override
-        public boolean onMarkerClick(Marker marker) {
+        public boolean onMarkerClick(final Marker marker) {
             if (markerMap.containsValue(marker)) {
                 playMarkerAudio(marker, false);
                 return false;
@@ -125,16 +126,15 @@ public class AGMapFragment extends SupportMapFragment implements
     };
 
     private OnInfoWindowClickListener onInfoWindowClickListener = new OnInfoWindowClickListener() {
-
         @Override
         public void onInfoWindowClick(final Marker marker) {
             mPlayer.doPlayPause();
         }
     };
-    
+
     private final OnCameraChangeListener mOnCameraChangeListener = new OnCameraChangeListener() {
         @Override
-        public void onCameraChange(CameraPosition cameraPosition) {
+        public void onCameraChange(final CameraPosition cameraPosition) {
             if (mMapIsMoved) {
                 Log.d("Debug", "Камеру переместили прикосновением");
                 mMapIsMoved = false;
@@ -147,7 +147,7 @@ public class AGMapFragment extends SupportMapFragment implements
         marker.showInfoWindow();
         return marker;
     }
-    
+
     private void playMarkerAudio(final Marker marker, final boolean playNow) {
         Record r = recordMap.get(marker.getId());
         if (r.getAudio() != null) {
@@ -174,8 +174,8 @@ public class AGMapFragment extends SupportMapFragment implements
     };
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent,
-            Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater,
+            final ViewGroup parent, Bundle savedInstanceState) {
         mOriginalContentView = super.onCreateView(inflater, parent,
                 savedInstanceState);
 
@@ -189,21 +189,19 @@ public class AGMapFragment extends SupportMapFragment implements
     public View getView() {
         return mOriginalContentView;
     }
-    
+
     private class TouchableWrapper extends FrameLayout {
-        public TouchableWrapper(Context context) {
+        public TouchableWrapper(final Context context) {
             super(context);
         }
 
         @Override
-        public boolean dispatchTouchEvent(MotionEvent ev) {
+        public boolean dispatchTouchEvent(final MotionEvent ev) {
             switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 break;
-
             case MotionEvent.ACTION_UP:
                 break;
-
             case MotionEvent.ACTION_MOVE:
                 mMapIsMoved = true;
                 break;
@@ -213,11 +211,11 @@ public class AGMapFragment extends SupportMapFragment implements
     }
 
     @Override
-    public void onProximity(String snippet) {
+    public void onProximity(final String snippet) {
         Marker marker = showInfoWindow(snippet);
         playMarkerAudio(marker, this.activeModePreference);
-    } 
-       
+    }
+
     private void setProximityAlert(final Record record) {
         final Intent notificationIntent = getProximityIntent(record);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(),
@@ -237,7 +235,7 @@ public class AGMapFragment extends SupportMapFragment implements
         notificationIntent.putExtra("snippet", record.getSnippet());
         return notificationIntent;
     }
-    
+
     @Override
     public void setRecord(final Record record) {
         Marker m = getMap().addMarker(
@@ -255,7 +253,7 @@ public class AGMapFragment extends SupportMapFragment implements
     }
 
     @Override
-    public void setStaticPoint(StaticPoint point) {
+    public void setStaticPoint(final StaticPoint point) {
         getMap().addMarker(
                 new MarkerOptions()
                         .position(new LatLng(point.getLat(), point.getLon()))
@@ -263,5 +261,5 @@ public class AGMapFragment extends SupportMapFragment implements
                         .snippet(point.getSnippet())
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.mount)));
-    }    
+    }
 }

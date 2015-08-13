@@ -30,7 +30,7 @@ public class MediaController extends FrameLayout implements IMediaController {
 
     private boolean showed;
 
-    public MediaController(Context context, AttributeSet attrs) {
+    public MediaController(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         mRoot = null;
         mContext = context;
@@ -56,7 +56,7 @@ public class MediaController extends FrameLayout implements IMediaController {
             initControllerView(mRoot);
     }
 
-    private void initControllerView(View v) {
+    private void initControllerView(final View v) {
         mPauseButton = (ImageButton) v.findViewById(R.id.pause);
         mReplayButton = (ImageButton) v.findViewById(R.id.replay);
         if (mPauseButton != null) {
@@ -83,7 +83,7 @@ public class MediaController extends FrameLayout implements IMediaController {
     };
 
     @Override
-    public void setAnchorView(RelativeLayout anchorView) {
+    public void setAnchorView(final RelativeLayout anchorView) {
         mAnchor = anchorView;
         FrameLayout.LayoutParams frameParams = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -92,13 +92,13 @@ public class MediaController extends FrameLayout implements IMediaController {
         View v = makeControllerView();
         addView(v, frameParams);
     }
-   
+
     @Override
-    public void setMediaPlayer(MediaPlayerControl player) {
+    public void setMediaPlayer(final MediaPlayerControl player) {
         mPlayer = player;
         updatePausePlay();
     }
-    
+
     @Override
     public void showOverlay() {
         if (showed == false && mAnchor != null) {
@@ -112,7 +112,7 @@ public class MediaController extends FrameLayout implements IMediaController {
         }
         updatePausePlay();
     }
-    
+
     @Override
     public void hideOverlay() {
         if (mAnchor == null) {
@@ -125,7 +125,7 @@ public class MediaController extends FrameLayout implements IMediaController {
         }
         showed = false;
     }
-    
+
     @Override
     public void doPausePlay() {
         if (mPlayer == null) {
@@ -136,10 +136,10 @@ public class MediaController extends FrameLayout implements IMediaController {
         } else {
             mPlayer.start();
         }
-        mPauseButton.setEnabled(true);
+        unfreezePausePlay();
         updatePausePlay();
     }
-    
+
     @Override
     public void updatePausePlay() {
         if (mRoot == null || mPauseButton == null || mPlayer == null) {
@@ -151,7 +151,7 @@ public class MediaController extends FrameLayout implements IMediaController {
             mPauseButton.setImageResource(R.drawable.ic_media_play);
         }
     }
-    
+
     @Override
     public void freezePausePlay() {
         mPauseButton.setEnabled(false);
