@@ -14,7 +14,7 @@ import android.util.Log;
 import android.widget.MediaController.MediaPlayerControl;
 import android.widget.RelativeLayout;
 
-public class Player implements MediaPlayerControl, IPlayer, OnAudioFocusChangeListener {
+public class Player implements MediaPlayerControl, IPlayer, OnAudioFocusChangeListener, Jingled {
 	
 	private Context mContext;
 	
@@ -25,6 +25,10 @@ public class Player implements MediaPlayerControl, IPlayer, OnAudioFocusChangeLi
 	private AudioManager mAudioManager;
 	
     private Handler mHandler = new Handler();
+    
+    private IPlayer mJinglePlayer;
+    
+    private boolean jingleBegin, jingleEnd;
 	
 	public Player(Context context, RelativeLayout anchorView) {
 		mContext = context;
@@ -188,7 +192,22 @@ public class Player implements MediaPlayerControl, IPlayer, OnAudioFocusChangeLi
 
 	@Override
 	public void onAudioFocusChange(int focusChange) {
-		// TODO Auto-generated method stub
 		Log.d("Debug", "Аудио фокус сменился");
+	}
+
+	@Override
+	public void setJinglePlayer(IPlayer jinglePlayer) {
+		mJinglePlayer = jinglePlayer;
+	}
+
+	@Override
+	public IPlayer getJinglePlayer() {
+		return mJinglePlayer;
+	}
+
+	@Override
+	public void setJinglePlayMode(boolean begin, boolean end) {
+		jingleBegin = begin;
+		jingleEnd = end;
 	}
 }
