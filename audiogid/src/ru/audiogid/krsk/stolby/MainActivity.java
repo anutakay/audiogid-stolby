@@ -1,6 +1,5 @@
 package ru.audiogid.krsk.stolby;
 
-import ru.audiogid.krsk.stolby.audio.IPlayer;
 import ru.audiogid.krsk.stolby.audio.Player;
 import ru.audiogid.krsk.stolby.maps.AGMapFragment;
 import ru.audiogid.krsk.stolby.maps.IProximityNotification;
@@ -35,7 +34,7 @@ public class MainActivity extends SavedFragmentActivity implements
     
     private IProximityNotification mProximityNotification;
 
-    private IPlayer mPlayer;
+    private Player mPlayer;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {

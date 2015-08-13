@@ -7,6 +7,6 @@ public interface IPlayer {
     public void hideOverlay();
 
     void doPlayPause();
-
-    void destroy();
+    
+    void reset();
 }
