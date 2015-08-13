@@ -32,8 +32,7 @@ public class Player implements MediaPlayerControl, IPlayer, OnAudioFocusChangeLi
 		mMediaController.setMediaPlayer(this);
 		mMediaController.setAnchorView(anchorView);
 		mMediaPlayer = new MediaPlayer();
-		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-        
+		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); 
 	}
 	
 	OnPreparedListener onPreparedListenerPlayNow = new OnPreparedListener() {
@@ -60,18 +59,15 @@ public class Player implements MediaPlayerControl, IPlayer, OnAudioFocusChangeLi
     };
     
     OnCompletionListener onCompletionListener = new OnCompletionListener() {
-
 		@Override
 		public void onCompletion(MediaPlayer mp) {
 			mAudioManager.abandonAudioFocus(Player.this);
 			mMediaController.freezePausePlay();
-		}
-    	
+		} 	
     };
 	
     @Override
-    public void setAudio(String audioFile, boolean playNow) {
-		
+    public void setAudio(String audioFile, boolean playNow) {	
 		mMediaPlayer.reset();
 		if(playNow) {
 			mMediaPlayer.setOnPreparedListener(onPreparedListenerPlayNow);
@@ -109,31 +105,26 @@ public class Player implements MediaPlayerControl, IPlayer, OnAudioFocusChangeLi
 
 	@Override
 	public int getDuration() {
-		// TODO Auto-generated method stub
 		return mMediaPlayer.getDuration();
 	}
 
 	@Override
 	public int getCurrentPosition() {
-		// TODO Auto-generated method stub
 		return mMediaPlayer.getCurrentPosition();
 	}
 
 	@Override
 	public void seekTo(int pos) {
-		// TODO Auto-generated method stub
 		mMediaPlayer.seekTo(pos);
 	}
 
 	@Override
 	public boolean isPlaying() {
-		// TODO Auto-generated method stub
 		return mMediaPlayer.isPlaying();
 	}
 
 	@Override
 	public int getBufferPercentage() {
-		// TODO Auto-generated method stub
 		int pos =  mMediaPlayer.getCurrentPosition();
 		if(pos == 0){
 			return 0;
@@ -143,19 +134,16 @@ public class Player implements MediaPlayerControl, IPlayer, OnAudioFocusChangeLi
 
 	@Override
 	public boolean canPause() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public boolean canSeekBackward() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean canSeekForward() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
@@ -184,7 +172,6 @@ public class Player implements MediaPlayerControl, IPlayer, OnAudioFocusChangeLi
 
 	@Override
 	public void onAudioFocusChange(int focusChange) {
-		// TODO Auto-generated method stub
 		Log.d("Debug", "Аудио фокус сменился");
 	}
 }

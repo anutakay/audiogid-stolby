@@ -45,9 +45,9 @@ public class AGMapFragment extends SupportMapFragment implements
 
     public static final String PROXIMITY_DETECTED = "ru.audiogid.krsk.stolby.category.PROXIMITY";
 
-    private GPSTracker gps;
+    private GPSTracker mGPS;
 
-    private IPlayer player;
+    private IPlayer mPlayer;
     
     private boolean mMapIsMoved = false;
 
@@ -68,10 +68,10 @@ public class AGMapFragment extends SupportMapFragment implements
         mLocationListener = new MLocationListener(getActivity()
                 .getApplicationContext(), getMap());
         mLocationListener.locationModeOff();
-        gps = new GPSTracker(getActivity(), mLocationListener);
-        if (gps.canGetLocation()) {
-            Log.d("debug", "Можно определить координаты " + gps.getLatitude()
-                    + " " + gps.getLongitude());
+        mGPS = new GPSTracker(getActivity(), mLocationListener);
+        if (mGPS.canGetLocation()) {
+            Log.d("debug", "Можно определить координаты " + mGPS.getLatitude()
+                    + " " + mGPS.getLongitude());
         } else {
             Log.d("debug", "Нельзя определить координаты");
         }
@@ -100,14 +100,14 @@ public class AGMapFragment extends SupportMapFragment implements
     
     @Override
     public void setPlayer(IPlayer player) {
-        this.player = player;
+        this.mPlayer = player;
     }
 
     private OnMapClickListener onMapClickListener = new OnMapClickListener() {
 
         @Override
         public void onMapClick(LatLng arg0) {
-            player.hideOverlay();
+            mPlayer.hideOverlay();
         }
     };
     
@@ -128,8 +128,7 @@ public class AGMapFragment extends SupportMapFragment implements
 
         @Override
         public void onInfoWindowClick(final Marker marker) {
-            Log.d("Debug", "onInfoWindowClick " + marker);
-            player.doPlayPause();
+            mPlayer.doPlayPause();
         }
     };
     
@@ -152,7 +151,7 @@ public class AGMapFragment extends SupportMapFragment implements
     private void playMarkerAudio(final Marker marker, final boolean playNow) {
         Record r = recordMap.get(marker.getId());
         if (r.getAudio() != null) {
-            player.setAudio(r.getAudio(), playNow);
+            mPlayer.setAudio(r.getAudio(), playNow);
         }
     }
 
@@ -223,7 +222,7 @@ public class AGMapFragment extends SupportMapFragment implements
         final Intent notificationIntent = getProximityIntent(record);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(),
                 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        gps.getLocationManager().addProximityAlert(record.getLat(),
+        mGPS.getLocationManager().addProximityAlert(record.getLat(),
                 record.getLon(), record.getRadius(), 1000000, pendingIntent);
     }
 
