@@ -1,8 +1,8 @@
 package ru.audiogid.krsk.stolby.model;
 
 public interface IRecordSetter {
-	
-	void setRecord(Record record);
-	
-	void setStaticPoint(StaticPoint point);
+
+    void setRecord(final Record record);
+
+    void setStaticPoint(final StaticPoint point);
 }

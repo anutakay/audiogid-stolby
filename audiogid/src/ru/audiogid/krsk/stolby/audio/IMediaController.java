@@ -4,21 +4,21 @@ import android.widget.RelativeLayout;
 import android.widget.MediaController.MediaPlayerControl;
 
 public interface IMediaController {
-    
-    void setAnchorView(RelativeLayout anchorView);
 
-    void setMediaPlayer(MediaPlayerControl player);
-    
+    void setAnchorView(final RelativeLayout anchorView);
+
+    void setMediaPlayer(final MediaPlayerControl player);
+
     void showOverlay();
-    
+
     void hideOverlay();
-    
+
     void doPausePlay();
-    
+
     void updatePausePlay();
-    
+
     void freezePausePlay();
-    
+
     void unfreezePausePlay();
-    
+
 }
