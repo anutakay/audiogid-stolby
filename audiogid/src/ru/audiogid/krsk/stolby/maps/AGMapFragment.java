@@ -202,7 +202,7 @@ public class AGMapFragment extends SupportMapFragment implements IRecordSetter, 
 	
 	@Override
 	public void setStaticPoint(StaticPoint point) {
-		Marker m = getMap().addMarker(new MarkerOptions().position(
+		getMap().addMarker(new MarkerOptions().position(
 				new LatLng(point.getLat(), point.getLon()))
     	        .title(point.getTitle())
     	        .snippet(point.getSnippet())

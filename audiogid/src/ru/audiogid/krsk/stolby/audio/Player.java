@@ -20,7 +20,7 @@ public class Player implements MediaPlayerControl, IPlayer, OnAudioFocusChangeLi
 	
 	private MediaPlayer mMediaPlayer;
 	
-	private MediaController mMediaController;
+	private IMediaController mMediaController;
 	
 	private AudioManager mAudioManager;
 	
@@ -31,13 +31,9 @@ public class Player implements MediaPlayerControl, IPlayer, OnAudioFocusChangeLi
 		mMediaController = new MediaController(context);
 		mMediaController.setMediaPlayer(this);
 		mMediaController.setAnchorView(anchorView);
-		setMediaPlayer(new MediaPlayer());
+		mMediaPlayer = new MediaPlayer();
 		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         
-	}
-
-	private void setMediaPlayer(MediaPlayer mediaPlayer) {
-		mMediaPlayer = mediaPlayer;
 	}
 	
 	OnPreparedListener onPreparedListenerPlayNow = new OnPreparedListener() {
@@ -46,7 +42,7 @@ public class Player implements MediaPlayerControl, IPlayer, OnAudioFocusChangeLi
         	mHandler.post(new Runnable() {
         		public void run() {
         			start();
-        			mMediaController.show();
+        			mMediaController.showOverlay();
         	 	}
         	});
         }
@@ -57,7 +53,7 @@ public class Player implements MediaPlayerControl, IPlayer, OnAudioFocusChangeLi
         public void onPrepared(MediaPlayer mp) {
         	mHandler.post(new Runnable() {
         		public void run() {
-        			mMediaController.show();
+        			mMediaController.showOverlay();
         	 	}
         	});
         }
@@ -68,7 +64,7 @@ public class Player implements MediaPlayerControl, IPlayer, OnAudioFocusChangeLi
 		@Override
 		public void onCompletion(MediaPlayer mp) {
 			mAudioManager.abandonAudioFocus(Player.this);
-			mMediaController.freezeButton();
+			mMediaController.freezePausePlay();
 		}
     	
     };
@@ -172,7 +168,7 @@ public class Player implements MediaPlayerControl, IPlayer, OnAudioFocusChangeLi
 	@Override
 	public void hideOverlay() {
 		if(mMediaController != null) {
-			mMediaController.hide();
+			mMediaController.hideOverlay();
 		}
 		if(this != null && this.isPlaying()) {
 			this.pause();
@@ -182,7 +178,7 @@ public class Player implements MediaPlayerControl, IPlayer, OnAudioFocusChangeLi
 	@Override
 	public void doPlayPause() {
 		if(mMediaController != null) {
-			mMediaController.doPauseResume();
+			mMediaController.doPausePlay();
 		}
 	}
 
