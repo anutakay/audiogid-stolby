@@ -19,4 +19,7 @@ public class Constants {
 	public static final String DIAMETER_COLUMN = "diametr";
 	
 	public static final String EXT = ".sqlite";
+	
+	public static final double HOME_LON = 92.738501;
+    public static final double HOME_LAT = 55.975218;
 }
