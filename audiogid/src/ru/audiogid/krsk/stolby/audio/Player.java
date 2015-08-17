@@ -26,6 +26,8 @@ public class Player extends AudioFocusPlayer implements IPlayer, OnLoadCompleteL
     SoundPool sp;
     
     int soundIdShot;
+    
+    int soundDuration = 0;
 
     public Player(final Context context, final RelativeLayout anchorView) {
         super(context);
@@ -37,6 +39,14 @@ public class Player extends AudioFocusPlayer implements IPlayer, OnLoadCompleteL
         sp = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
         sp.setOnLoadCompleteListener(this);
         soundIdShot = sp.load(mContext, R.raw.uodl, 1);
+        soundDuration = getSoundDuration(R.raw.uodl);
+    }
+    
+    private int getSoundDuration(int id) {
+        MediaPlayer mp = MediaPlayer.create(mContext, id);
+        int a = mp.getDuration();
+        mp.release();
+        return a;
     }
 
     OnPreparedListener onPreparedListenerPlayNow = new OnPreparedListener() {
@@ -44,10 +54,16 @@ public class Player extends AudioFocusPlayer implements IPlayer, OnLoadCompleteL
         public void onPrepared(final MediaPlayer mp) {
             mHandler.post(new Runnable() {
                 public void run() {
-                    Log.d("debug", "Здесь должен быть звук");
                     sp.play(soundIdShot, 1, 1, 0, 0, 1);
-                    start();
-                    mMediaController.showOverlay();
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            start();
+                            mMediaController.showOverlay();
+                        }
+                    }, soundDuration);
+                    
                 }
             });
         }
@@ -58,8 +74,14 @@ public class Player extends AudioFocusPlayer implements IPlayer, OnLoadCompleteL
         public void onPrepared(final MediaPlayer mp) {
             mHandler.post(new Runnable() {
                 public void run() {
-                    sp.play(soundIdShot, 1, 1, 0, 0, 1);
-                    mMediaController.showOverlay();
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mMediaController.showOverlay();
+                        }
+                    }, soundDuration);
+                    
                 }
             });
         }
