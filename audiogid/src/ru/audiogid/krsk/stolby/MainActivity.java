@@ -25,6 +25,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 
 public class MainActivity extends SavedFragmentActivity implements
         LocationSource, LocationListener {
+    
+    private IFakeProximityCreator detecter;
 
     private AGMapFragment mMapFragment;
     
@@ -49,12 +51,10 @@ public class MainActivity extends SavedFragmentActivity implements
             finish();
             return;
         }
-<<<<<<< HEAD
-        detecter = this.mapFragment;
-        mapFragment.init();	
-=======
-        mMapFragment.init();
->>>>>>> refs/heads/ch
+
+        detecter = this.mMapFragment;
+        mMapFragment.init();	
+
         setUpMapIfNeeded();
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         mLocationManager.requestLocationUpdates(
@@ -122,7 +122,6 @@ public class MainActivity extends SavedFragmentActivity implements
         }
     }
 
-<<<<<<< HEAD
 	@Override
 	public void onProviderDisabled(String provider) {
 		// TODO Auto-generated method stub
@@ -142,28 +141,22 @@ public class MainActivity extends SavedFragmentActivity implements
 	}
 
 	private void getPrefs() {
-=======
-    @Override
-    public void onStatusChanged(final String provider, final int status, Bundle extras) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void onProviderEnabled(final String provider) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void onProviderDisabled(final String provider) {
-        // TODO Auto-generated method stub
-    }
-
-    private void getPrefs() {
->>>>>>> refs/heads/ch
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(getBaseContext());
         mMapFragment.activeModePreference = prefs.getBoolean("active_mode",
                 false);
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
