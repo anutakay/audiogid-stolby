@@ -29,8 +29,8 @@ public class ProximityReceiver extends BroadcastReceiver {
     private void processProximity(final Context context, final String title,
             final String audio, final String snippet) {
         log(title, audio);
-        // createNotification(context, title, audio);
-        notifyInMap(context, snippet);
+        createNotification(context, title, audio);
+        //notifyInMap(context, snippet);
     }
 
     private void log(final String title, final String audio) {

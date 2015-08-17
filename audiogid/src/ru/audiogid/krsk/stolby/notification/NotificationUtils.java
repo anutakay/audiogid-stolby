@@ -58,7 +58,7 @@ public class NotificationUtils {
         NotificationCompat.Builder nb = new NotificationCompat.Builder(mContext)
                 // NotificationCompat.Builder nb = new
                 // NotificationBuilder(context) //для версии Android > 3.0
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.logo)
                 // иконка уведомления
                 .setAutoCancel(true)
                 // уведомление закроется по клику на него
@@ -98,7 +98,7 @@ public class NotificationUtils {
         NotificationCompat.Builder nb = new NotificationCompat.Builder(mContext)
                 // NotificationCompat.Builder nb = new
                 // NotificationBuilder(context) //для версии Android > 3.0
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.logo)
                 // иконка уведомления
                 .setAutoCancel(true)
                 // уведомление закроется по клику на него
