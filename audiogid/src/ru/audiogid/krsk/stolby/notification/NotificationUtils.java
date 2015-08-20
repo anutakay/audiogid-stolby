@@ -131,6 +131,7 @@ public class NotificationUtils {
 
     private Intent createAudioIntent(final String title, final String audio, final String snippet) {
         Intent intent = new Intent(mContext, MainActivity.class);
+        intent.putExtra("snippet", snippet);
         intent.putExtra("title", title);
         intent.putExtra("audio", audio);
         return intent;
