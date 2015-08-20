@@ -39,6 +39,20 @@ public class MainActivity extends SavedFragmentActivity implements
     private IProximityNotification mProximityNotification;
 
     private Player mPlayer;
+    
+    public boolean visibleOnScreen = false;
+    @Override
+    protected void onPause() {
+        super.onPause();
+        visibleOnScreen = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        visibleOnScreen = true;
+    }
+
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -95,8 +109,10 @@ public class MainActivity extends SavedFragmentActivity implements
     }
 
     protected void onNewIntent(final Intent intent) {
-        final String snippet = intent.getExtras().getString("snippet");
-        this.mProximityNotification.onProximity(snippet);
+        if(intent.hasExtra("snippet")) {
+            final String snippet = intent.getExtras().getString("snippet");
+            this.mProximityNotification.onProximity(snippet);
+        }
     }
 
     public void onClick(final View b) {
