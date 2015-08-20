@@ -92,7 +92,7 @@ public class NotificationUtils {
 
     @SuppressWarnings("deprecation")
     public int createProximityNotification(final String title,
-            final String audio) {
+            final String audio, final String snippet) {
         Intent notificationIntent = createAudioIntent(title, audio);
         // Intent notificationIntent = new Intent();// по клику на уведомлении
         // откроется HomeActivity

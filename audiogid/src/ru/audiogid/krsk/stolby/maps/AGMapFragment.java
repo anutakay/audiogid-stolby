@@ -231,6 +231,12 @@ public class AGMapFragment extends SupportMapFragment implements
         Marker marker = showInfoWindow(snippet);
         playMarkerAudio(marker, this.activeModePreference);
     }
+    
+    @Override
+    public void onProximityNotificationClick(String snippet) {
+        Marker marker = showInfoWindow(snippet);
+        playMarkerAudio(marker, false);
+    }
 
     private void setProximityAlert(final Record record) {
         final Intent notificationIntent = getProximityIntent(record);

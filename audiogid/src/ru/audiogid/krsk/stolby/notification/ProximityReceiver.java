@@ -31,10 +31,10 @@ public class ProximityReceiver extends BroadcastReceiver {
         log(title, audio);
         MainActivity currentActivity = (MainActivity)((AudiogidApp) context
                 .getApplicationContext()).getCurrentActivity();
-        if(currentActivity.visibleOnScreen) {
+        if(currentActivity !=null && currentActivity.visibleOnScreen) {
             notifyInMap(context, snippet);
         } else {
-            createNotification(context, title, audio);
+            createNotification(context, title, audio, snippet);
         }     
     }
 
@@ -63,9 +63,9 @@ public class ProximityReceiver extends BroadcastReceiver {
 
     @SuppressWarnings("unused")
     private void createNotification(final Context context, final String title,
-            final String audio) {
+            final String audio, final String snippet) {
         NotificationUtils n = NotificationUtils.getInstance(context);
-        n.createProximityNotification(title, audio);
+        n.createProximityNotification(title, audio, snippet);
     }
 
 }
