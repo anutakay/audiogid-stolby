@@ -113,6 +113,9 @@ public class MainActivity extends SavedFragmentActivity implements
             final String snippet = intent.getExtras().getString("snippet");
             this.mProximityNotification.onProximity(snippet);
         }
+        if(intent.hasExtra("audio")) {
+            Log.d("MainActivity", "Проиграть аудио");
+        }
     }
 
     public void onClick(final View b) {
