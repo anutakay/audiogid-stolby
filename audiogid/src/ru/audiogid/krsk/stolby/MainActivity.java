@@ -103,10 +103,10 @@ public class MainActivity extends SavedFragmentActivity implements
 
     protected void onNewIntent(final Intent intent) {
         if(intent.hasExtra("snippet")) {
+            final String snippet = intent.getExtras().getString("snippet");
             if(intent.hasExtra("audio")) {
-                Log.d("MainActivity", "Проиграть аудио");
+                this.mProximityNotification.onProximityNotificationClick(snippet);
             } else {
-                final String snippet = intent.getExtras().getString("snippet");
                 this.mProximityNotification.onProximity(snippet);
             }
         }
