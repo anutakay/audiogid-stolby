@@ -27,8 +27,13 @@ public class ProximityReceiver extends BroadcastReceiver {
     private void processProximity(final Context context, final String title,
             final String audio, final String snippet) {
         log(title, audio);
-        // createNotification(context, title, audio);
-        notifyInMap(context, snippet);
+        MainActivity currentActivity = (MainActivity)((AudiogidApp) context
+                .getApplicationContext()).getCurrentActivity();
+        if(currentActivity.visibleOnScreen) {
+            notifyInMap(context, snippet);
+        } else {
+            createNotification(context, title, audio);
+        }     
     }
 
     private void log(final String title, final String audio) {

@@ -35,6 +35,20 @@ public class MainActivity extends SavedFragmentActivity implements
     private IProximityNotification mProximityNotification;
 
     private Player mPlayer;
+    
+    public boolean visibleOnScreen = false;
+    @Override
+    protected void onPause() {
+        super.onPause();
+        visibleOnScreen = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        visibleOnScreen = true;
+    }
+
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
