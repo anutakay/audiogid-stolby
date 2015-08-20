@@ -235,7 +235,7 @@ public class AGMapFragment extends SupportMapFragment implements
     @Override
     public void onProximityNotificationClick(String snippet) {
         Marker marker = showInfoWindow(snippet);
-        playMarkerAudio(marker, false, false);
+        playMarkerAudio(marker, true, false);
     }
 
     private void setProximityAlert(final Record record) {
