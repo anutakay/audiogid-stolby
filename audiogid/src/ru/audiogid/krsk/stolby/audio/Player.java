@@ -28,6 +28,8 @@ public class Player extends AudioFocusPlayer implements IPlayer, OnLoadCompleteL
     int soundIdShot;
     
     int soundDuration = 0;
+    
+    boolean isJingled = false;
 
     public Player(final Context context, final RelativeLayout anchorView) {
         super(context);
@@ -54,16 +56,20 @@ public class Player extends AudioFocusPlayer implements IPlayer, OnLoadCompleteL
         public void onPrepared(final MediaPlayer mp) {
             mHandler.post(new Runnable() {
                 public void run() {
-                    sp.play(soundIdShot, 1, 1, 0, 0, 1);
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            start();
-                            mMediaController.showOverlay();
-                        }
-                    }, soundDuration);
-                    
+                    if(isJingled) {
+                        sp.play(soundIdShot, 1, 1, 0, 0, 1);
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                start();
+                                mMediaController.showOverlay();
+                            }
+                        }, soundDuration);
+                    } else {
+                        start();
+                        mMediaController.showOverlay();
+                    }
                 }
             });
         }
@@ -72,18 +78,11 @@ public class Player extends AudioFocusPlayer implements IPlayer, OnLoadCompleteL
     OnPreparedListener onPreparedListener = new OnPreparedListener() {
         @Override
         public void onPrepared(final MediaPlayer mp) {
-            mHandler.post(new Runnable() {
-                public void run() {
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mMediaController.showOverlay();
-                        }
-                    }, soundDuration);
-                    
-                }
-            });
+            if(isJingled) {
+                sp.play(soundIdShot, 1, 1, 0, 0, 1);
+            }
+            mMediaController.showOverlay();
+
         }
     };
 
@@ -101,7 +100,8 @@ public class Player extends AudioFocusPlayer implements IPlayer, OnLoadCompleteL
     }
 
     @Override
-    public void setAudio(final String audioFile, final boolean playNow) {
+    public void setAudio(final String audioFile, final boolean playNow, final boolean jingle) {
+        isJingled = jingle;
         mMediaController.unfreezePausePlay();
         AssetFileDescriptor afd = null;
         try {
@@ -143,6 +143,7 @@ public class Player extends AudioFocusPlayer implements IPlayer, OnLoadCompleteL
     @Override
     public void reset() {
         super.reset();
+        isJingled = false;
         mMediaController.unfreezePausePlay();
     }
 
