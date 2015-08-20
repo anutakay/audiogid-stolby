@@ -2,7 +2,6 @@ package ru.audiogid.krsk.stolby.notification;
 
 import java.util.HashMap;
 
-import ru.audiogid.krsk.stolby.audio.AudioActivity;
 import ru.audiogid.krsk.stolby.MainActivity;
 import ru.audiogid.krsk.stolby.R;
 
@@ -93,7 +92,7 @@ public class NotificationUtils {
     @SuppressWarnings("deprecation")
     public int createProximityNotification(final String title,
             final String audio, final String snippet) {
-        Intent notificationIntent = createAudioIntent(title, audio);
+        Intent notificationIntent = createAudioIntent(title, audio, snippet);
         // Intent notificationIntent = new Intent();// по клику на уведомлении
         // откроется HomeActivity
         NotificationCompat.Builder nb = new NotificationCompat.Builder(mContext)
@@ -130,7 +129,7 @@ public class NotificationUtils {
         return lastId++;
     }
 
-    private Intent createAudioIntent(final String title, final String audio) {
+    private Intent createAudioIntent(final String title, final String audio, final String snippet) {
         Intent intent = new Intent(mContext, MainActivity.class);
         intent.putExtra("title", title);
         intent.putExtra("audio", audio);
