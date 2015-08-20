@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import ru.audiogid.krsk.stolby.audio.AudioActivity;
 
+import ru.audiogid.krsk.stolby.MainActivity;
 import ru.audiogid.krsk.stolby.R;
 
 import android.annotation.SuppressLint;
@@ -131,9 +132,9 @@ public class NotificationUtils {
     }
 
     private Intent createAudioIntent(final String title, final String audio) {
-        Intent intent = new Intent(mContext, AudioActivity.class);
-        intent.putExtra("point_title", title);
-        intent.putExtra("point_audio", audio);
+        Intent intent = new Intent(mContext, MainActivity.class);
+        intent.putExtra("title", title);
+        intent.putExtra("audio", audio);
         return intent;
     }
 }
