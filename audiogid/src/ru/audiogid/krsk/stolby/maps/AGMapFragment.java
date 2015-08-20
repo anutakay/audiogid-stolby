@@ -133,7 +133,7 @@ public class AGMapFragment extends SupportMapFragment implements
         @Override
         public boolean onMarkerClick(final Marker marker) {
             if (markerMap.containsValue(marker)) {
-                playMarkerAudio(marker, false);
+                playMarkerAudio(marker, false, false);
                 return false;
             } else {
                 return false;
@@ -164,10 +164,10 @@ public class AGMapFragment extends SupportMapFragment implements
         return marker;
     }
 
-    private void playMarkerAudio(final Marker marker, final boolean playNow) {
+    private void playMarkerAudio(final Marker marker, final boolean playNow, final boolean jingle) {
         Record r = recordMap.get(marker.getId());
         if (r.getAudio() != null) {
-            mPlayer.setAudio(r.getAudio(), playNow);
+            mPlayer.setAudio(r.getAudio(), playNow, jingle);
         }
     }
 
@@ -229,13 +229,13 @@ public class AGMapFragment extends SupportMapFragment implements
     @Override
     public void onProximity(final String snippet) {
         Marker marker = showInfoWindow(snippet);
-        playMarkerAudio(marker, this.activeModePreference);
+        playMarkerAudio(marker, this.activeModePreference, true);
     }
     
     @Override
     public void onProximityNotificationClick(String snippet) {
         Marker marker = showInfoWindow(snippet);
-        playMarkerAudio(marker, false);
+        playMarkerAudio(marker, false, false);
     }
 
     private void setProximityAlert(final Record record) {
