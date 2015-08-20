@@ -2,193 +2,154 @@ package ru.audiogid.krsk.stolby.audio;
 
 import java.io.IOException;
 
+import ru.audiogid.krsk.stolby.R;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
-import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
+import android.media.SoundPool;
+import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.MediaController.MediaPlayerControl;
 import android.widget.RelativeLayout;
 
-public class Player implements MediaPlayerControl, IPlayer, OnAudioFocusChangeListener {
-	
-	private Context mContext;
-	
-	private MediaPlayer mMediaPlayer;
-	
-	private MediaController mMediaController;
-	
-	private AudioManager mAudioManager;
-	
-    private Handler mHandler = new Handler();
-	
-	public Player(Context context, RelativeLayout anchorView) {
-		mContext = context;
-		mMediaController = new MediaController(context);
-		mMediaController.setMediaPlayer(this);
-		mMediaController.setAnchorView(anchorView);
-		setMediaPlayer(new MediaPlayer());
-		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-        
-	}
+public class Player extends AudioFocusPlayer implements IPlayer, OnLoadCompleteListener {
 
-	private void setMediaPlayer(MediaPlayer mediaPlayer) {
-		mMediaPlayer = mediaPlayer;
-	}
-	
-	OnPreparedListener onPreparedListenerPlayNow = new OnPreparedListener() {
+    private Context mContext;
+
+    private IMediaController mMediaController;
+    
+    private Handler mHandler = new Handler();
+    
+    SoundPool sp;
+    
+    int soundIdShot;
+    
+    int soundDuration = 0;
+    
+    boolean isJingled = false;
+
+    public Player(final Context context, final RelativeLayout anchorView) {
+        super(context);
+        mContext = context;
+        mMediaController = new MediaController(context);
+        mMediaController.setMediaPlayer(this);
+        mMediaController.setAnchorView(anchorView); 
+        
+        sp = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
+        sp.setOnLoadCompleteListener(this);
+        soundIdShot = sp.load(mContext, R.raw.uodl, 1);
+        soundDuration = getSoundDuration(R.raw.uodl);
+    }
+    
+    private int getSoundDuration(int id) {
+        MediaPlayer mp = MediaPlayer.create(mContext, id);
+        int a = mp.getDuration();
+        mp.release();
+        return a;
+    }
+
+    OnPreparedListener onPreparedListenerPlayNow = new OnPreparedListener() {
         @Override
-        public void onPrepared(MediaPlayer mp) {
-        	mHandler.post(new Runnable() {
-        		public void run() {
-        			start();
-        			mMediaController.show();
-        	 	}
-        	});
+        public void onPrepared(final MediaPlayer mp) {
+            mHandler.post(new Runnable() {
+                public void run() {
+                    if(isJingled) {
+                        sp.play(soundIdShot, 1, 1, 0, 0, 1);
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                start();
+                                mMediaController.showOverlay();
+                            }
+                        }, soundDuration);
+                    } else {
+                        start();
+                        mMediaController.showOverlay();
+                    }
+                }
+            });
         }
     };
-    
+
     OnPreparedListener onPreparedListener = new OnPreparedListener() {
         @Override
-        public void onPrepared(MediaPlayer mp) {
-        	mHandler.post(new Runnable() {
-        		public void run() {
-        			mMediaController.show();
-        	 	}
-        	});
+        public void onPrepared(final MediaPlayer mp) {
+            if(isJingled) {
+                sp.play(soundIdShot, 1, 1, 0, 0, 1);
+            }
+            mMediaController.showOverlay();
+
+        }
+    };
+
+    private OnCompletionListener onCompletionListener = new OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+            Player.this.onCompletion(mp);
         }
     };
     
-    OnCompletionListener onCompletionListener = new OnCompletionListener() {
-
-		@Override
-		public void onCompletion(MediaPlayer mp) {
-			mAudioManager.abandonAudioFocus(Player.this);
-			mMediaController.freezeButton();
-		}
-    	
-    };
-	
     @Override
-    public void setAudio(String audioFile, boolean playNow) {
-		
-		mMediaPlayer.reset();
-		if(playNow) {
-			mMediaPlayer.setOnPreparedListener(onPreparedListenerPlayNow);
-		} else {
-			mMediaPlayer.setOnPreparedListener(onPreparedListener);
-		}
-		mMediaPlayer.setOnCompletionListener(onCompletionListener);
-		AssetFileDescriptor afd;
+    protected void onCompletion(MediaPlayer mp) {
+        super.onCompletion(mp);
+        mMediaController.freezePausePlay();
+    }
+
+    @Override
+    public void setAudio(final String audioFile, final boolean playNow, final boolean jingle) {
+        isJingled = jingle;
+        mMediaController.unfreezePausePlay();
+        AssetFileDescriptor afd = null;
         try {
-			afd = ((Context)mContext).getAssets().openFd(audioFile);
-
-			mMediaPlayer.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
-			mMediaPlayer.prepare();
-        } catch (IOException e) {
-            Log.e("PlayAudioDemo", "Could not open file " + audioFile + " for playback.", e);
+            afd = getAFD(audioFile);
+        } catch (IOException e1) {
+            e1.printStackTrace();
         }
-	}
-	
-	@Override
-	public void start() {
-		int requestResult = mAudioManager.requestAudioFocus(this,
-		        AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-		if(requestResult == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-			mMediaPlayer.start();
-		} else {
-			Log.d("Debug", "Невозможно получить фокус ");
-		}
-	}
+        
+        OnPreparedListener pl = null;
+        if (playNow) {
+            pl = onPreparedListenerPlayNow;
+        } else {
+            pl = onPreparedListener;
+        }
+        super.setAudio(afd, pl, onCompletionListener);       
+    }
+      
+    private AssetFileDescriptor getAFD(final String audioFile) throws IOException {
+        return ((Context) mContext).getAssets().openFd(audioFile);
+    } 
+    
+    @Override
+    public void hideOverlay() {
+        if (mMediaController != null) {
+            mMediaController.hideOverlay();
+        }
+        if (this != null && this.isPlaying()) {
+            this.pause();
+        }
+    }
 
-	@Override
-	public void pause() {
-		mAudioManager.abandonAudioFocus(this);
-		mMediaPlayer.pause();
-	}
+    @Override
+    public void doPlayPause() {
+        if (mMediaController != null) {
+            mMediaController.doPausePlay();
+        }
+    }
 
-	@Override
-	public int getDuration() {
-		// TODO Auto-generated method stub
-		return mMediaPlayer.getDuration();
-	}
+    @Override
+    public void reset() {
+        super.reset();
+        isJingled = false;
+        mMediaController.unfreezePausePlay();
+    }
 
-	@Override
-	public int getCurrentPosition() {
-		// TODO Auto-generated method stub
-		return mMediaPlayer.getCurrentPosition();
-	}
-
-	@Override
-	public void seekTo(int pos) {
-		// TODO Auto-generated method stub
-		mMediaPlayer.seekTo(pos);
-	}
-
-	@Override
-	public boolean isPlaying() {
-		// TODO Auto-generated method stub
-		return mMediaPlayer.isPlaying();
-	}
-
-	@Override
-	public int getBufferPercentage() {
-		// TODO Auto-generated method stub
-		int pos =  mMediaPlayer.getCurrentPosition();
-		if(pos == 0){
-			return 0;
-		}
-		return 100*mMediaPlayer.getDuration()/pos;
-	}
-
-	@Override
-	public boolean canPause() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public boolean canSeekBackward() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean canSeekForward() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	public void destroy() {
-		mAudioManager.abandonAudioFocus(this);
-		mMediaPlayer.stop();
-		mMediaPlayer.release();
-	}
-	
-	@Override
-	public void hideOverlay() {
-		if(mMediaController != null) {
-			mMediaController.hide();
-		}
-		if(this != null && this.isPlaying()) {
-			this.pause();
-		}
-	}
-
-	@Override
-	public void doPlayPause() {
-		if(mMediaController != null) {
-			mMediaController.doPauseResume();
-		}
-	}
-
-	@Override
-	public void onAudioFocusChange(int focusChange) {
-		// TODO Auto-generated method stub
-		Log.d("Debug", "Аудио фокус сменился");
-	}
+    @Override
+    public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+        Log.d("debug", "onLoadComplete, sampleId = " + sampleId + ", status = " + status);
+        
+    }
 }
