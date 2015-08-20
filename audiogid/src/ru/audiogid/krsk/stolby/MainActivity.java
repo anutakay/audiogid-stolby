@@ -88,8 +88,10 @@ public class MainActivity extends SavedFragmentActivity implements
     }
 
     protected void onNewIntent(final Intent intent) {
-        final String snippet = intent.getExtras().getString("snippet");
-        this.mProximityNotification.onProximity(snippet);
+        if(intent.hasExtra("snippet")) {
+            final String snippet = intent.getExtras().getString("snippet");
+            this.mProximityNotification.onProximity(snippet);
+        }
     }
 
     public void onClick(final View b) {
