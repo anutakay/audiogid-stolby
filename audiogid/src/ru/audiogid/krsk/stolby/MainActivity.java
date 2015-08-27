@@ -1,8 +1,8 @@
 package ru.audiogid.krsk.stolby;
 
-import ru.audiogid.krsk.stolby.audio.Player;
-import ru.audiogid.krsk.stolby.maps.AGMapFragment;
-import ru.audiogid.krsk.stolby.maps.IProximityNotification;
+import ru.audiogid.krsk.stolby.audio.PlayerImpl;
+import ru.audiogid.krsk.stolby.maps.MapFragmentImpl;
+import ru.audiogid.krsk.stolby.maps.ProximityNotification;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Criteria;
@@ -24,7 +24,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 public class MainActivity extends SavedFragmentActivity implements
         LocationSource, LocationListener {
 
-    private AGMapFragment mMapFragment;
+    private MapFragmentImpl mMapFragment;
     
     private GoogleMap mMap;
     
@@ -32,9 +32,9 @@ public class MainActivity extends SavedFragmentActivity implements
     
     private OnLocationChangedListener mLocationListener;
     
-    private IProximityNotification mProximityNotification;
+    private ProximityNotification mProximityNotification;
 
-    private Player mPlayer;
+    private PlayerImpl mPlayer;
     
     public boolean visibleOnScreen = false;
     @Override
@@ -55,7 +55,7 @@ public class MainActivity extends SavedFragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mMapFragment = (AGMapFragment) getSupportFragmentManager()
+        mMapFragment = (MapFragmentImpl) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         if (mMapFragment.getMap() == null) {
             finish();
@@ -71,7 +71,7 @@ public class MainActivity extends SavedFragmentActivity implements
 
         mProximityNotification = mMapFragment;
 
-        mPlayer = new Player(this, (RelativeLayout) findViewById(R.id.mainView));
+        mPlayer = new PlayerImpl(this, (RelativeLayout) findViewById(R.id.mainView));
         mMapFragment.setPlayer(mPlayer);
     }
 

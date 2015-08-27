@@ -1,6 +1,6 @@
 package ru.audiogid.krsk.stolby.maps;
 
-public interface ILocationModeSwitch {
+public interface LocationModeSwitch {
 
     public void locationModeOn();
 

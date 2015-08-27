@@ -9,7 +9,7 @@ import android.widget.RelativeLayout;
 
 public class AudioActivity extends Activity {
 
-    private Player mPlayer;
+    private PlayerImpl mPlayer;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -24,7 +24,7 @@ public class AudioActivity extends Activity {
         }
 
         setContentView(R.layout.activity_audio);
-        mPlayer = new Player(this, (RelativeLayout) findViewById(R.id.mainView));
+        mPlayer = new PlayerImpl(this, (RelativeLayout) findViewById(R.id.mainView));
         play(audio);
     }
 

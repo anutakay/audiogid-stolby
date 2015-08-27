@@ -14,7 +14,7 @@ import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 
-public class MLocationListener implements LocationListener, ILocationModeSwitch {
+public class LocationListenerImpl implements LocationListener, LocationModeSwitch {
 
     private boolean mLocationModeOn = true;
 
@@ -22,7 +22,7 @@ public class MLocationListener implements LocationListener, ILocationModeSwitch 
 
     GoogleMap mMap;
 
-    public MLocationListener(final Context context, final GoogleMap map) {
+    public LocationListenerImpl(final Context context, final GoogleMap map) {
         mContext = context;
         mMap = map;
     }

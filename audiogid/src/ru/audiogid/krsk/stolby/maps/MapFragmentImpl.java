@@ -3,8 +3,8 @@ package ru.audiogid.krsk.stolby.maps;
 import java.util.HashMap;
 import java.util.Map;
 
-import ru.audiogid.krsk.stolby.audio.IPlayer;
-import ru.audiogid.krsk.stolby.model.IRecordSetter;
+import ru.audiogid.krsk.stolby.audio.Player;
+import ru.audiogid.krsk.stolby.model.RecordSetter;
 import ru.audiogid.krsk.stolby.model.Record;
 import ru.audiogid.krsk.stolby.model.StaticPoint;
 import ru.audiogid.krsk.stolby.notification.ProximityReceiver;
@@ -40,14 +40,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class AGMapFragment extends SupportMapFragment implements
-        IAGMapFragment, IProximityNotification, IRecordSetter {
+public class MapFragmentImpl extends SupportMapFragment implements
+        MapFragment, ProximityNotification, RecordSetter {
 
     public static final String PROXIMITY_DETECTED = "ru.audiogid.krsk.stolby.category.PROXIMITY";
 
     private GPSTracker mGPS;
 
-    private IPlayer mPlayer;
+    private Player mPlayer;
 
     private boolean mMapIsMoved = false;
 
@@ -59,13 +59,13 @@ public class AGMapFragment extends SupportMapFragment implements
     // По сниппету можно получить маркер, сниппет можно получить по записи
     private Map<String, Marker> markerMap = new HashMap<String, Marker>();
 
-    private MLocationListener mLocationListener;
+    private LocationListenerImpl mLocationListener;
 
     private View mOriginalContentView;
 
     @Override
     public void init() {
-        mLocationListener = new MLocationListener(getActivity()
+        mLocationListener = new LocationListenerImpl(getActivity()
                 .getApplicationContext(), getMap());
         mLocationListener.locationModeOff();
         mGPS = new GPSTracker(getActivity(), mLocationListener);
@@ -100,7 +100,7 @@ public class AGMapFragment extends SupportMapFragment implements
     }
 
     @Override
-    public void setPlayer(final IPlayer player) {
+    public void setPlayer(final Player player) {
         this.mPlayer = player;
     }
 

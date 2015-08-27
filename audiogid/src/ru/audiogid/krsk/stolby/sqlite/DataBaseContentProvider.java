@@ -2,7 +2,7 @@ package ru.audiogid.krsk.stolby.sqlite;
 
 import java.io.IOException;
 
-import ru.audiogid.krsk.stolby.model.IRecordSetter;
+import ru.audiogid.krsk.stolby.model.RecordSetter;
 import ru.audiogid.krsk.stolby.model.Record;
 import ru.audiogid.krsk.stolby.model.StaticPoint;
 
@@ -17,7 +17,7 @@ public class DataBaseContentProvider {
 
     private DBHelper mDBHelper;
 
-    private IRecordSetter mRecordSetter;
+    private RecordSetter mRecordSetter;
 
     public DataBaseContentProvider(final Activity context) {
         init(context);
@@ -32,7 +32,7 @@ public class DataBaseContentProvider {
         }
     }
 
-    public void setRecordSetter(final IRecordSetter recordSetter) {
+    public void setRecordSetter(final RecordSetter recordSetter) {
         this.mRecordSetter = recordSetter;
     }
 
