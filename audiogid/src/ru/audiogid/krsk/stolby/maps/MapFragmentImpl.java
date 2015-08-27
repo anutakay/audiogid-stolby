@@ -251,8 +251,8 @@ public class MapFragmentImpl extends SupportMapFragment implements
         getMap().addCircle(
                 new CircleOptions()
                         .center(new LatLng(record.getLat(), record.getLon()))
-                        .radius(record.getRadius()).fillColor(0x300099cc)
-                        .strokeColor(0xff0099cc).strokeWidth(2));
+                        .radius(record.getRadius()).fillColor(getResources().getColor(R.color.circle_color))
+                        .strokeColor(getResources().getColor(R.color.border_color)).strokeWidth(2));
         recordMap.put(m.getId(), record);
         markerMap.put(m.getSnippet(), m);
         setProximityAlert(record);

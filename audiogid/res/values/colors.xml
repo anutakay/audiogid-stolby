@@ -1,0 +1,4 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+	<color name="border_color">#ff0099cc</color> 
+	<color name="circle_color">#300099cc</color> 
+</resources>
