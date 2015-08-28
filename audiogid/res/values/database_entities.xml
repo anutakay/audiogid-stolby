@@ -8,5 +8,6 @@
 	<string name="audio_filename_column">audio</string>
 	<string name="title_column">name</string>
 	<string name="raduis_column">diametr</string>
+	<string name="point_id_column">id</string>
     
 </resources>

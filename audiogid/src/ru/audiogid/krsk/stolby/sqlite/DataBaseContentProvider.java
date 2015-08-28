@@ -36,6 +36,8 @@ public class DataBaseContentProvider {
     
         String radius_column;
         
+        String point_id_column;
+        
         Constants(Context context) {
             records_table = context.getString(R.string.records_table);
             statis_objects_table = context.getString(R.string.static_objects_table);
@@ -44,6 +46,7 @@ public class DataBaseContentProvider {
             audio_column = context.getString(R.string.audio_filename_column);
             title_column = context.getString(R.string.title_column);
             radius_column = context.getString(R.string.raduis_column);
+            point_id_column = context.getString(R.string.point_id_column);
         }
     }
 
@@ -97,10 +100,12 @@ public class DataBaseContentProvider {
             int titleColIndex = c.getColumnIndex(constants.title_column);
             int diameterColIndex = c.getColumnIndex(constants.radius_column);
             int audioColIndex = c.getColumnIndex(constants.audio_column);
+            int pointIDIndex = c.getColumnIndex(constants.point_id_column);
             do {
                 Record r = new Record(c.getDouble(longColIndex),
                         c.getDouble(latColIndex), c.getInt(diameterColIndex),
-                        c.getString(titleColIndex), c.getString(audioColIndex));
+                        c.getString(titleColIndex), c.getString(audioColIndex), 
+                        c.getInt(pointIDIndex));
                 recordSetter.setRecord(r);
             } while (c.moveToNext());
         } 

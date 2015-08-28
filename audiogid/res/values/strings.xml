@@ -6,6 +6,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="test">Test</string>
 	<string name="database_name">1</string>
-	<item name="database_version" format="integer" type="integer">13</item>
+	<item name="database_version" format="integer" type="integer">19</item>
 	
 </resources>
