@@ -2,101 +2,108 @@ package ru.audiogid.krsk.stolby.sqlite;
 
 import java.io.IOException;
 
+import ru.audiogid.krsk.stolby.R;
 import ru.audiogid.krsk.stolby.model.RecordSetter;
 import ru.audiogid.krsk.stolby.model.Record;
 import ru.audiogid.krsk.stolby.model.StaticPoint;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 public class DataBaseContentProvider {
+    
+    DatabaseHelper databaseHelper;
 
-    private final String LOG_TAG = "DataBaseActivity";
+    RecordSetter recordSetter;
+    
+    private Constants constants;
+    
+    private class Constants {
 
-    private DBHelper mDBHelper;
-
-    private RecordSetter mRecordSetter;
+        String records_table;
+    
+        String statis_objects_table;
+    
+        String longitude_column;
+    
+        String latitude_column;
+    
+        String audio_column;
+    
+        String title_column;
+    
+        String radius_column;
+        
+        Constants(Context context) {
+            records_table = context.getString(R.string.records_table);
+            statis_objects_table = context.getString(R.string.static_objects_table);
+            longitude_column = context.getString(R.string.longitude_column);
+            latitude_column = context.getString(R.string.latitude_column);
+            audio_column = context.getString(R.string.audio_filename_column);
+            title_column = context.getString(R.string.title_column);
+            radius_column = context.getString(R.string.raduis_column);
+        }
+    }
 
     public DataBaseContentProvider(final Activity context) {
         init(context);
     }
 
     private void init(final Activity context) {
-        mDBHelper = new DBHelper(context);
+        constants = new Constants(context);
+        
+        databaseHelper = new DatabaseHelper(context);
         try {
-            mDBHelper.createDataBase();
+            databaseHelper.createDataBase();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void setRecordSetter(final RecordSetter recordSetter) {
-        this.mRecordSetter = recordSetter;
+        this.recordSetter = recordSetter;
     }
 
-    public final void getData() {
-        SQLiteDatabase db = mDBHelper.getReadableDatabase();
-        Cursor c = db.query(Constants.STATIC_OBJECTS_TABLE, null, null, null,
+    public final void load() {
+        SQLiteDatabase database = databaseHelper.getReadableDatabase();
+        loadStaticPoints(database);
+        loadRecords(database);
+    }
+    
+    private void loadStaticPoints(SQLiteDatabase db) {
+        Cursor c = db.query(constants.statis_objects_table, null, null, null,
                 null, null, null);
-        if (c.moveToFirst()) {
-            int longColIndex = c.getColumnIndex(Constants.LON_COLUMN);
-            int latColIndex = c.getColumnIndex(Constants.LAT_COLUMN);
-            int titleColIndex = c.getColumnIndex(Constants.TITLE_COLUMN);
+        if (c.moveToFirst() && recordSetter != null) {
+            int longColIndex = c.getColumnIndex(constants.longitude_column);
+            int latColIndex = c.getColumnIndex(constants.latitude_column);
+            int titleColIndex = c.getColumnIndex(constants.title_column);
             do {
-                if (mRecordSetter == null) {
-                    break;
-                }
                 StaticPoint sp = new StaticPoint(c.getDouble(longColIndex),
                         c.getDouble(latColIndex), c.getString(titleColIndex));
-                mRecordSetter.setStaticPoint(sp);
+                recordSetter.setStaticPoint(sp);
             } while (c.moveToNext());
-        } else {
-            Log.d(LOG_TAG, "Empty records table");
-        }
+        } 
         c.close();
-
-        c = db.query(Constants.RECORDS_TABLE, null, null, null, null, null,
+    }
+    
+    private void loadRecords(SQLiteDatabase db) {
+        Cursor c = db.query(constants.records_table, null, null, null, null, null,
                 null);
-        if (c.moveToFirst()) {
-            int longColIndex = c.getColumnIndex(Constants.LON_COLUMN);
-            int latColIndex = c.getColumnIndex(Constants.LAT_COLUMN);
-            int titleColIndex = c.getColumnIndex(Constants.TITLE_COLUMN);
-            int diameterColIndex = c.getColumnIndex(Constants.DIAMETER_COLUMN);
-            int audioColIndex = c
-                    .getColumnIndex(Constants.AUDIO_FILENAME_COLUMN);
+        if (c.moveToFirst() && recordSetter != null) {
+            int longColIndex = c.getColumnIndex(constants.longitude_column);
+            int latColIndex = c.getColumnIndex(constants.latitude_column);
+            int titleColIndex = c.getColumnIndex(constants.title_column);
+            int diameterColIndex = c.getColumnIndex(constants.radius_column);
+            int audioColIndex = c.getColumnIndex(constants.audio_column);
             do {
-                if (mRecordSetter == null) {
-                    break;
-                }
                 Record r = new Record(c.getDouble(longColIndex),
                         c.getDouble(latColIndex), c.getInt(diameterColIndex),
                         c.getString(titleColIndex), c.getString(audioColIndex));
-                mRecordSetter.setRecord(r);
+                recordSetter.setRecord(r);
             } while (c.moveToNext());
-        } else {
-            Log.d(LOG_TAG, "Empty records table");
-        }
-        c.close();
-
-        c = db.query(Constants.STATIC_OBJECTS_TABLE, null, null, null, null,
-                null, null);
-        if (c.moveToFirst()) {
-            int longColIndex = c.getColumnIndex(Constants.LON_COLUMN);
-            int latColIndex = c.getColumnIndex(Constants.LAT_COLUMN);
-            int titleColIndex = c.getColumnIndex(Constants.TITLE_COLUMN);
-            do {
-                if (mRecordSetter == null) {
-                    break;
-                }
-                StaticPoint sp = new StaticPoint(c.getDouble(longColIndex),
-                        c.getDouble(latColIndex), c.getString(titleColIndex));
-                mRecordSetter.setStaticPoint(sp);
-            } while (c.moveToNext());
-        } else {
-            Log.d(LOG_TAG, "Empty records table");
-        }
+        } 
         c.close();
     }
 

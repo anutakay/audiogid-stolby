@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import ru.audiogid.krsk.stolby.R;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,7 +16,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-class DBHelper extends SQLiteOpenHelper {
+class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final int BUFFER_SIZE = 1024;
 
@@ -22,14 +24,16 @@ class DBHelper extends SQLiteOpenHelper {
 
     private static final String DB_PATH = Constants.DB_PATH;
 
-    private static final String DB_NAME = Constants.DB_NAME;
+    private static String DB_NAME;
 
-    private static final int DB_VERSION = Constants.DB_VERSION;
+    private static int DB_VERSION;
 
     Context mContext;
 
-    public DBHelper(final Activity context) {
-        super(context, DB_NAME, null, 1);
+    public DatabaseHelper(final Activity context) {
+        super(context, context.getString(R.string.database_name), null, 1);
+        DB_NAME = context.getString(R.string.database_name);  
+        DB_VERSION = context.getResources().getInteger(R.integer.database_version);
         mContext = context;
     }
 

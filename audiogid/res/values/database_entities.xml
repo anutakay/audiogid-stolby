@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="records_table">stolby</string>
+	<string name="static_objects_table">statobj</string>
+	<string name="longitude_column">lg</string>
+	<string name="latitude_column">lt</string>
+	<string name="audio_filename_column">audio</string>
+	<string name="title_column">name</string>
+	<string name="raduis_column">diametr</string>
+    
+</resources>

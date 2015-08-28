@@ -85,7 +85,7 @@ public class MapFragmentImpl extends SupportMapFragment implements
         final DataBaseContentProvider provider = new DataBaseContentProvider(
                 getActivity());
         provider.setRecordSetter(this);
-        provider.getData();
+        provider.load();
     }
 
     @Override
