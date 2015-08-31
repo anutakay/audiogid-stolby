@@ -6,15 +6,11 @@ import java.util.Map;
 import ru.audiogid.krsk.stolby.audio.Player;
 import ru.audiogid.krsk.stolby.model.RecordSetter;
 import ru.audiogid.krsk.stolby.model.Record;
-import ru.audiogid.krsk.stolby.model.StaticPoint;
-import ru.audiogid.krsk.stolby.notification.ProximityReceiver;
 import ru.audiogid.krsk.stolby.sqlite.Constants;
 import ru.audiogid.krsk.stolby.sqlite.DataBaseContentProvider;
 
 import android.annotation.SuppressLint;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,48 +29,50 @@ import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapFragmentImpl extends SupportMapFragment implements
-        MapFragment, ProximityNotification, RecordSetter {
+        MapFragment, ProximityNotificationListener {
 
-    public static final String PROXIMITY_DETECTED = "ru.audiogid.krsk.stolby.category.PROXIMITY";
+    private GPSTracker tracker;
 
-    private GPSTracker mGPS;
+    private Player player;
 
-    private Player mPlayer;
-
-    private boolean mMapIsMoved = false;
+    private boolean mapIsMoved = false;
 
     public boolean activeModePreference = false;
 
     // По id маркера можно получить запись, айди можно получить из маркера.
-    private Map<String, Record> recordMap = new HashMap<String, Record>();
+    private Map<String, Record> records = new HashMap<String, Record>();
 
     // По сниппету можно получить маркер, сниппет можно получить по записи
-    private Map<String, Marker> markerMap = new HashMap<String, Marker>();
+    private Map<String, Marker> markers = new HashMap<String, Marker>();
 
-    private LocationListenerImpl mLocationListener;
+    private LocationListenerImpl locationListener;
 
-    private View mOriginalContentView;
+    private View originalContentView;
+    
+    private RecordSetter recordSetter;
+    
+    public MapFragmentImpl() {
+        super();
+    }
 
     @Override
-    public void init() {
-        mLocationListener = new LocationListenerImpl(getActivity()
+    public void init() {      
+        locationListener = new LocationListenerImpl(getActivity()
                 .getApplicationContext(), getMap());
-        mLocationListener.locationModeOff();
-        mGPS = new GPSTracker(getActivity(), mLocationListener);
-        if (mGPS.canGetLocation()) {
-            Log.d("debug", "Можно определить координаты " + mGPS.getLatitude()
-                    + " " + mGPS.getLongitude());
+        locationListener.locationModeOff();
+        tracker = new GPSTracker(getActivity(), locationListener);
+        if (tracker.canGetLocation()) {
+            Log.d("debug", "Можно определить координаты " + tracker.getLatitude()
+                    + " " + tracker.getLongitude());
         } else {
             Log.d("debug", "Нельзя определить координаты");
         }
+        recordSetter = new RecordSetterImpl(getActivity(), getMap(), tracker, records, markers);
         toHomeLocation();
         getMap().getUiSettings().setZoomControlsEnabled(true);
         getMap().setInfoWindowAdapter(infoWindowAdapter);
@@ -84,7 +82,7 @@ public class MapFragmentImpl extends SupportMapFragment implements
         getMap().setOnCameraChangeListener(mOnCameraChangeListener);
         final DataBaseContentProvider provider = new DataBaseContentProvider(
                 getActivity());
-        provider.setRecordSetter(this);
+        provider.setRecordSetter(recordSetter);
         provider.load();
     }
 
@@ -101,14 +99,14 @@ public class MapFragmentImpl extends SupportMapFragment implements
 
     @Override
     public void setPlayer(final Player player) {
-        this.mPlayer = player;
+        this.player = player;
     }
 
     private OnMapClickListener onMapClickListener = new OnMapClickListener() {
 
         @Override
         public void onMapClick(final LatLng arg0) {
-            mPlayer.hideOverlay();
+            player.hideOverlay();
         }
     };
 
@@ -116,7 +114,7 @@ public class MapFragmentImpl extends SupportMapFragment implements
 
         @Override
         public boolean onMarkerClick(final Marker marker) {
-            if (markerMap.containsValue(marker)) {
+            if (markers.containsValue(marker)) {
                 playMarkerAudio(marker, false, false);
                 return false;
             } else {
@@ -128,30 +126,30 @@ public class MapFragmentImpl extends SupportMapFragment implements
     private OnInfoWindowClickListener onInfoWindowClickListener = new OnInfoWindowClickListener() {
         @Override
         public void onInfoWindowClick(final Marker marker) {
-            mPlayer.doPlayPause();
+            player.doPlayPause();
         }
     };
 
     private final OnCameraChangeListener mOnCameraChangeListener = new OnCameraChangeListener() {
         @Override
         public void onCameraChange(final CameraPosition cameraPosition) {
-            if (mMapIsMoved) {
+            if (mapIsMoved) {
                 Log.d("Debug", "Камеру переместили прикосновением");
-                mMapIsMoved = false;
+                mapIsMoved = false;
             }
         }
     };
 
     private Marker showInfoWindow(final String snippet) {
-        Marker marker = markerMap.get(snippet);
+        Marker marker = markers.get(snippet);
         marker.showInfoWindow();
         return marker;
     }
 
     private void playMarkerAudio(final Marker marker, final boolean playNow, final boolean jingle) {
-        Record r = recordMap.get(marker.getId());
+        Record r = records.get(marker.getId());
         if (r.getAudio() != null) {
-            mPlayer.setAudio(r.getAudio(), playNow, jingle);
+            player.setAudio(r.getAudio(), playNow, jingle);
         }
     }
 
@@ -176,18 +174,18 @@ public class MapFragmentImpl extends SupportMapFragment implements
     @Override
     public View onCreateView(final LayoutInflater inflater,
             final ViewGroup parent, Bundle savedInstanceState) {
-        mOriginalContentView = super.onCreateView(inflater, parent,
+        originalContentView = super.onCreateView(inflater, parent,
                 savedInstanceState);
 
         TouchableWrapper mTouchView = new TouchableWrapper(getActivity());
-        mTouchView.addView(mOriginalContentView);
+        mTouchView.addView(originalContentView);
 
         return mTouchView;
     }
 
     @Override
     public View getView() {
-        return mOriginalContentView;
+        return originalContentView;
     }
 
     private class TouchableWrapper extends FrameLayout {
@@ -203,7 +201,7 @@ public class MapFragmentImpl extends SupportMapFragment implements
             case MotionEvent.ACTION_UP:
                 break;
             case MotionEvent.ACTION_MOVE:
-                mMapIsMoved = true;
+                mapIsMoved = true;
                 break;
             }
             return super.dispatchTouchEvent(ev);
@@ -222,50 +220,5 @@ public class MapFragmentImpl extends SupportMapFragment implements
         playMarkerAudio(marker, true, false);
     }
 
-    private void setProximityAlert(final Record record) {
-        final Intent notificationIntent = getProximityIntent(record);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(),
-                0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        mGPS.getLocationManager().addProximityAlert(record.getLat(),
-                record.getLon(), record.getRadius(), 1000000, pendingIntent);
-    }
-
-    private Intent getProximityIntent(final Record record) {
-        final Intent notificationIntent = new Intent(getActivity()
-                .getApplicationContext(), ProximityReceiver.class);
-        notificationIntent.setAction(PROXIMITY_DETECTED + "_" + record.getLat()
-                + "_" + record.getLon());
-        notificationIntent.addCategory(PROXIMITY_DETECTED);
-        notificationIntent.putExtra("title", record.getTitle());
-        notificationIntent.putExtra("audio", record.getAudio());
-        notificationIntent.putExtra("snippet", record.getSnippet());
-        return notificationIntent;
-    }
-
-    @Override
-    public void setRecord(final Record record) {
-        Marker m = getMap().addMarker(
-                new MarkerOptions()
-                        .position(new LatLng(record.getLat(), record.getLon()))
-                        .title(record.getTitle()).snippet(record.getSnippet()));
-        getMap().addCircle(
-                new CircleOptions()
-                        .center(new LatLng(record.getLat(), record.getLon()))
-                        .radius(record.getRadius()).fillColor(getResources().getColor(R.color.circle_color))
-                        .strokeColor(getResources().getColor(R.color.border_color)).strokeWidth(2));
-        recordMap.put(m.getId(), record);
-        markerMap.put(m.getSnippet(), m);
-        setProximityAlert(record);
-    }
-
-    @Override
-    public void setStaticPoint(final StaticPoint point) {
-        getMap().addMarker(
-                new MarkerOptions()
-                        .position(new LatLng(point.getLat(), point.getLon()))
-                        .title(point.getTitle())
-                        .snippet(point.getSnippet())
-                        .icon(BitmapDescriptorFactory
-                                .fromResource(R.drawable.mount)));
-    }
+    
 }

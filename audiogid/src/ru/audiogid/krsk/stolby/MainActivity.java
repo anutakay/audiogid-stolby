@@ -2,7 +2,7 @@ package ru.audiogid.krsk.stolby;
 
 import ru.audiogid.krsk.stolby.audio.PlayerImpl;
 import ru.audiogid.krsk.stolby.maps.MapFragmentImpl;
-import ru.audiogid.krsk.stolby.maps.ProximityNotification;
+import ru.audiogid.krsk.stolby.maps.ProximityNotificationListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Criteria;
@@ -32,7 +32,7 @@ public class MainActivity extends SavedFragmentActivity implements
     
     private OnLocationChangedListener mLocationListener;
     
-    private ProximityNotification mProximityNotification;
+    private ProximityNotificationListener mProximityNotification;
 
     private PlayerImpl mPlayer;
     
