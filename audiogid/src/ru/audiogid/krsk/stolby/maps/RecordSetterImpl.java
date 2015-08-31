@@ -1,7 +1,5 @@
 package ru.audiogid.krsk.stolby.maps;
 
-import java.util.Map;
-
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -29,21 +27,19 @@ public class RecordSetterImpl implements RecordSetter {
     
     private GPSTracker tracker;
     
-    private Map<String, Record> records;
-    private Map<String, Marker> markers;
+    private RecordMarkerTranslator translator;
     
     public RecordSetterImpl(Context context, GoogleMap map, GPSTracker tracker, 
-                            Map<String, Record> records, Map<String, Marker> markers) {
+                            RecordMarkerTranslator translator) {
         this.context = context;
         this.map = map;
         this.tracker = tracker;
-        this.records = records;
-        this.markers = markers;
+        this.translator = translator;
     }
     
     @Override
     public void setRecord(final Record record) {
-        Marker m = map.addMarker(
+        Marker marker = map.addMarker(
                 new MarkerOptions()
                         .position(new LatLng(record.getLat(), record.getLon()))
                         .title(record.getTitle()).snippet(record.getSnippet()));
@@ -54,8 +50,7 @@ public class RecordSetterImpl implements RecordSetter {
                         .fillColor(context.getResources().getColor(R.color.circle_color))
                         .strokeColor(context.getResources().getColor(R.color.border_color))
                         .strokeWidth(2));
-        records.put(m.getId(), record);
-        markers.put(m.getSnippet(), m);
+        translator.add(marker, record);
         setProximityAlert(record);
     }
 

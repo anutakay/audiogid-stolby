@@ -1,8 +1,5 @@
 package ru.audiogid.krsk.stolby.maps;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import ru.audiogid.krsk.stolby.audio.Player;
 import ru.audiogid.krsk.stolby.model.RecordSetter;
 import ru.audiogid.krsk.stolby.model.Record;
@@ -43,12 +40,8 @@ public class MapFragmentImpl extends SupportMapFragment implements
     private boolean mapIsMoved = false;
 
     public boolean activeModePreference = false;
-
-    // По id маркера можно получить запись, айди можно получить из маркера.
-    private Map<String, Record> records = new HashMap<String, Record>();
-
-    // По сниппету можно получить маркер, сниппет можно получить по записи
-    private Map<String, Marker> markers = new HashMap<String, Marker>();
+    
+    private RecordMarkerTranslator translator = new RecordMarkerTranslator();
 
     private LocationListenerImpl locationListener;
 
@@ -72,7 +65,7 @@ public class MapFragmentImpl extends SupportMapFragment implements
         } else {
             Log.d("debug", "Нельзя определить координаты");
         }
-        recordSetter = new RecordSetterImpl(getActivity(), getMap(), tracker, records, markers);
+        recordSetter = new RecordSetterImpl(getActivity(), getMap(), tracker, translator);
         toHomeLocation();
         getMap().getUiSettings().setZoomControlsEnabled(true);
         getMap().setInfoWindowAdapter(infoWindowAdapter);
@@ -114,7 +107,7 @@ public class MapFragmentImpl extends SupportMapFragment implements
 
         @Override
         public boolean onMarkerClick(final Marker marker) {
-            if (markers.containsValue(marker)) {
+            if (translator.contains(marker)) {
                 playMarkerAudio(marker, false, false);
                 return false;
             } else {
@@ -141,13 +134,13 @@ public class MapFragmentImpl extends SupportMapFragment implements
     };
 
     private Marker showInfoWindow(final String snippet) {
-        Marker marker = markers.get(snippet);
+        Marker marker = translator.getMarkerBySnippet(snippet);
         marker.showInfoWindow();
         return marker;
     }
 
     private void playMarkerAudio(final Marker marker, final boolean playNow, final boolean jingle) {
-        Record r = records.get(marker.getId());
+        Record r = translator.getRecordByMarker(marker);
         if (r.getAudio() != null) {
             player.setAudio(r.getAudio(), playNow, jingle);
         }
