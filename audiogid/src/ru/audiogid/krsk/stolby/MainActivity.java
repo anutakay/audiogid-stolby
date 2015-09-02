@@ -6,12 +6,10 @@ import ru.audiogid.krsk.stolby.maps.ProximityNotificationListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Criteria;
-import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,22 +19,24 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 
-public class MainActivity extends SavedFragmentActivity implements
-        LocationSource, LocationListener {
+public class MainActivity extends SavedFragmentActivity {
 
-    private MapFragmentImpl mMapFragment;
+    private MapFragmentImpl mapFragment;
     
-    private GoogleMap mMap;
+    private GoogleMap map;
     
-    private LocationManager mLocationManager;
+    private LocationManager locationManager;
     
-    private OnLocationChangedListener mLocationListener;
+    private LocationSource locationSource;
     
-    private ProximityNotificationListener mProximityNotification;
+    private LocationListener locationListener;
+    
+    private ProximityNotificationListener proximityNotification;
 
-    private PlayerImpl mPlayer;
+    private PlayerImpl player;
     
     public boolean visibleOnScreen = false;
+    
     @Override
     protected void onPause() {
         super.onPause();
@@ -55,34 +55,33 @@ public class MainActivity extends SavedFragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mMapFragment = (MapFragmentImpl) getSupportFragmentManager()
+        mapFragment = (MapFragmentImpl) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        if (mMapFragment.getMap() == null) {
+        if (mapFragment.getMap() == null) {
             finish();
             return;
         }
-        mMapFragment.init();
+        mapFragment.init();
         setUpMapIfNeeded();
-        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        mLocationManager.requestLocationUpdates(
-                mLocationManager.getBestProvider(new Criteria(), true), 1000, 1,
-                this);
-        mMap.setLocationSource(this);
+        
+        LocationListenerImpl lli = new LocationListenerImpl();
+        locationListener = lli;
+        locationSource = lli;
+        
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(
+                locationManager.getBestProvider(new Criteria(), true), 1000, 1,
+                locationListener);
+        map.setLocationSource(locationSource);
 
-        mProximityNotification = mMapFragment;
+        proximityNotification = mapFragment;
 
-        mPlayer = new PlayerImpl(this, (RelativeLayout) findViewById(R.id.mainView));
-        mMapFragment.setPlayer(mPlayer);
+        player = new PlayerImpl(this, (RelativeLayout) findViewById(R.id.mainView));
+        mapFragment.setPlayer(player);
+        
+       
     }
-
-    private void setUpMapIfNeeded() {
-        if (mMap == null) {
-            mMap = ((SupportMapFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.map)).getMap();
-            mMap.setMyLocationEnabled(true);
-        }
-    }
-
+    
     @Override
     protected void onStart() {
         super.onStart();
@@ -92,7 +91,7 @@ public class MainActivity extends SavedFragmentActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mPlayer.destroy();
+        player.destroy();
     }
 
     public boolean onCreateOptionsMenu(final Menu menu) {
@@ -105,57 +104,30 @@ public class MainActivity extends SavedFragmentActivity implements
         if(intent.hasExtra("snippet")) {
             final String snippet = intent.getExtras().getString("snippet");
             if(intent.hasExtra("audio")) {
-                this.mProximityNotification.onProximityNotificationClick(snippet);
+                this.proximityNotification.onProximityNotificationClick(snippet);
             } else {
-                this.mProximityNotification.onProximity(snippet);
+                this.proximityNotification.onProximity(snippet);
             }
-        }
-        
+        }   
     }
 
     public void onClick(final View b) {
-        mMapFragment.toHomeLocation();
-    }
-
-    @Override
-    public void activate(final OnLocationChangedListener listener) {
-        Log.d("Debug", "activate");
-        mLocationListener = listener;
-    }
-
-    @Override
-    public void deactivate() {
-        Log.d("Debug", "deactivate");
-        mLocationListener = null;
-    }
-
-    @Override
-    public void onLocationChanged(final Location location) {
-        if (mLocationListener != null) {
-            mLocationListener.onLocationChanged(location);
-        }
-    }
-
-    @Override
-    public void onStatusChanged(final String provider, final int status, Bundle extras) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void onProviderEnabled(final String provider) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void onProviderDisabled(final String provider) {
-        // TODO Auto-generated method stub
+        mapFragment.toHomeLocation();
     }
 
     private void getPrefs() {
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(getBaseContext());
-        mMapFragment.activeModePreference = prefs.getBoolean("active_mode",
+        mapFragment.activeModePreference = prefs.getBoolean("active_mode",
                 false);
+    }
+    
+    private void setUpMapIfNeeded() {
+        if (map == null) {
+            map = ((SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.map)).getMap();
+            map.setMyLocationEnabled(true);
+        }
     }
 
 }
